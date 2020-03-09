@@ -1,0 +1,781 @@
+{
+    "quests": [
+        {
+            "arcade": [
+                {
+                    "arcade_winner": [
+                        {
+                            "text": "Win a game of Arcade",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "arcade_gamer": [
+                        {
+                            "text": "Play 3 Arcade Games",
+                            "goal": "3",
+                            "id": "play"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "arena": [
+                {
+                    "arena_daily_play": [
+                        {
+                            "text": "Play 5 games",
+                            "goal": "5",
+                            "id": "arena_daily_play"
+                        }
+                    ]
+                },
+                {
+                    "arena_daily_kills": [
+                        {
+                            "text": "Kill 5 players",
+                            "goal": "5",
+                            "id": "arena_daily_kills"
+                        }
+                    ]
+                },
+                {
+                    "arena_daily_wins": [
+                        {
+                            "text": "Win 2 games",
+                            "goal": "2",
+                            "id": "arena_daily_wins"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "bedwars": [
+                {
+                    "bedwars_daily_one_more": [
+                        {
+                            "text": "Play 2 games of Bed Wars",
+                            "goal": "2",
+                            "id": "bedwars_daily_played"
+                        }
+                    ]
+                },
+                {
+                    "bedwars_daily_win": [
+                        {
+                            "text": "Win a game of Bed Wars",
+                            "goal": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "blitz": [
+                {
+                    "blitz_game_of_the_day": [
+                        {
+                            "text": "Play a game of Blitz",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "blitz_win": [
+                        {
+                            "text": "Win a game of Blitz",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "blitz_kills": [
+                        {
+                            "text": "Kill 5 players in Blitz",
+                            "goal": "5",
+                            "id": "killblitz10"
+                        }
+                    ]
+                },
+                {
+                    "blitz_loot_chest_daily": [
+                        {
+                            "text": "Loot 25 chests in Blitz",
+                            "goal": "25",
+                            "id": "lootchestblitz"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "build_battle": [
+                {
+                    "build_battle_winner": [
+                        {
+                            "text": "Win 1 match of Build battle",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "build_battle_player": [
+                        {
+                            "text": "Play 3 games of Build battle",
+                            "goal": "3",
+                            "id": "play"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "cvc": [
+                {
+                    "cvc_win_daily_normal": [
+                        {
+                            "text": "Win a game of Defusal Cops and Crims",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "cvc_kill_daily_normal": [
+                        {
+                            "text": "Get 15 kills in Defusal Mode",
+                            "goal": "15",
+                            "id": "cvc_kill_daily_normal"
+                        }
+                    ]
+                },
+                {
+                    "cvc_win_daily_deathmatch": [
+                        {
+                            "text": "Win a game of Deathmatch",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "cvc_kill": [
+                        {
+                            "text": "Get 300 points in Team Deathmatch",
+                            "goal": "300",
+                            "id": "cvc_kill_daily_deathmatch"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "crazy_walls": [
+                {
+                    "crazy_walls_daily_play": [
+                        {
+                            "text": "Play 2 games of Crazy Walls with at least 1 kill",
+                            "goal": "2",
+                            "id": "crazy_walls_daily_play"
+                        }
+                    ]
+                },
+                {
+                    "crazy_walls_daily_kill": [
+                        {
+                            "text": "Kill a total of 10 players",
+                            "goal": "10",
+                            "id": "crazy_walls_daily_kill"
+                        }
+                    ]
+                },
+                {
+                    "crazy_walls_daily_win": [
+                        {
+                            "text": "Win a game of Crazy Walls",
+                            "goal": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "duels": [
+                {
+                    "duels_player": [
+                        {
+                            "text": "Play 5 Duels",
+                            "goal": "5",
+                            "id": "play"
+                        }
+                    ]
+                },
+                {
+                    "duels_killer": [
+                        {
+                            "text": "Kill a total of 5 players",
+                            "goal": "5",
+                            "id": "kill"
+                        }
+                    ]
+                },
+                {
+                    "duels_winner": [
+                        {
+                            "text": "Win a duel",
+                            "goal": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "mega_walls": [
+                {
+                    "mega_walls_play": [
+                        {
+                            "text": "Play a game of Mega Walls",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "mega_walls_win": [
+                        {
+                            "text": "Win a game of Mega Walls with at least 1 kill",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "mega_walls_kill": [
+                        {
+                            "text": "Kill 15 players in Mega Walls",
+                            "goal": "15",
+                            "id": "mega_walls_kill_daily"
+                        }
+                    ]
+                },
+                {
+                    "mega_walls_faithful": [
+                        {
+                            "text": "Play 3 games",
+                            "goal": "3",
+                            "id": "mega_walls_faithful_play"
+                        },
+                        {
+                            "text": "Win 1 game",
+                            "goal": "1",
+                            "id": "mega_walls_faithful_win"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "murder_mystery": [
+                {
+                    "mm_daily_target_kill": [
+                        {
+                            "text": "Kill 2 targets in Assassins mode",
+                            "goal": "2",
+                            "id": "mm_target_kills"
+                        }
+                    ]
+                },
+                {
+                    "mm_daily_power_play": [
+                        {
+                            "text": "Kill murderer or win as murderer in Classic or Hardcore mode",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "mm_daily_win": [
+                        {
+                            "text": "Win a game",
+                            "goal": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "paintball": [
+                {
+                    "paintballer": [
+                        {
+                            "text": "Win a game of Paintball",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "paintball_killer": [
+                        {
+                            "text": "Kill 100 players in Paintball",
+                            "goal": "100",
+                            "id": "kill"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "quake": [
+                {
+                    "quake_daily_kill": [
+                        {
+                            "text": "Kill 50 players in Quakecraft",
+                            "goal": "50",
+                            "id": "quake_daily_kill"
+                        }
+                    ]
+                },
+                {
+                    "quake_daily_play": [
+                        {
+                            "text": "Play 3 games of Quakecraft",
+                            "goal": "3",
+                            "id": "quake_daily_play"
+                        }
+                    ]
+                },
+                {
+                    "quake_daily_win": [
+                        {
+                            "text": "Win a game of Quakecraft",
+                            "goal": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "skyclash": [
+                {
+                    "skyclash_play_games": [
+                        {
+                            "text": "Play 5 games of Skyclash",
+                            "goal": "5",
+                            "id": "play"
+                        }
+                    ]
+                },
+                {
+                    "skyclash_void": [
+                        {
+                            "text": "Kill 5 players in the void",
+                            "goal": "5",
+                            "id": "skyclash_void_kills"
+                        },
+                        {
+                            "text": "Open 3 Enderchests",
+                            "goal": "3",
+                            "id": "skyclash_enderchests"
+                        }
+                    ]
+                },
+                {
+                    "skyclash_kills": [
+                        {
+                            "text": "Kill 15 players in Skyclash",
+                            "goal": "15",
+                            "id": "kill"
+                        }
+                    ]
+                },
+                {
+                    "skyclash_play_points": [
+                        {
+                            "text": "Obtain 24 Play Points in Skyclash",
+                            "goal": "24",
+                            "id": "skyclash_play_points"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "skywars": [
+                {
+                    "skywars_solo_kills": [
+                        {
+                            "text": "Kill 15 players in Solo Mode",
+                            "goal": "15",
+                            "id": "skywars_solo_kills"
+                        }
+                    ]
+                },
+                {
+                    "skywars_solo_win": [
+                        {
+                            "text": "Win a game of Solo Mode",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "skywars_team_win": [
+                        {
+                            "text": "Win a game of Team Mode",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "skywars_team_kills": [
+                        {
+                            "text": "Kill 15 players in Team Mode",
+                            "goal": "15",
+                            "id": "skywars_team_kills"
+                        }
+                    ]
+                },
+                {
+                    "skywars_arcade_win": [
+                        {
+                            "text": "Win a game in the Skywars Laboratory",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "skywars_corrupt_win": [
+                        {
+                            "text": "Win a corrupt game",
+                            "goal": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "smash_heroes": [
+                {
+                    "supersmash_solo_win": [
+                        {
+                            "text": "Win a game in Solo Mode",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "supersmash_solo_kills": [
+                        {
+                            "text": "Kill 15 enemy heroes in Solo Mode",
+                            "goal": "15",
+                            "id": "supersmash_solo_kills"
+                        }
+                    ]
+                },
+                {
+                    "supersmash_team_win": [
+                        {
+                            "text": "Win a game in Team Mode",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "supersmash_team_kills": [
+                        {
+                            "text": "Kill 15 enemy heroes in Team Mode",
+                            "goal": "15",
+                            "id": "supersmash_team_kills"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "speed_uhc": [
+                {
+                    "solo_brawler": [
+                        {
+                            "text": "Win a game of Solo Speed UHC",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "team_brawler": [
+                        {
+                            "text": "Win a game of Team Speed UHC",
+                            "goal": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tkr": [
+                {
+                    "gingerbread_bling_bling": [
+                        {
+                            "text": "Grab 50 coin pickups",
+                            "goal": "50",
+                            "id": "gingerbread_gold_pickedup"
+                        }
+                    ]
+                },
+                {
+                    "gingerbread_racer": [
+                        {
+                            "text": "Complete 5 laps",
+                            "goal": "5",
+                            "id": "gingerbread_laps_completed"
+                        }
+                    ]
+                },
+                {
+                    "gingerbread_maps": [
+                        {
+                            "text": "Complete 5 races",
+                            "goal": "5",
+                            "id": "gingerbread_races_completed"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tnt": [
+                {
+                    "tnt_tntrun_daily": [
+                        {
+                            "text": "Walk over 500 blocks",
+                            "goal": "500",
+                            "id": "tnt_tntrun_daily"
+                        }
+                    ]
+                },
+                {
+                    "tnt_pvprun_daily": [
+                        {
+                            "text": "Kill 3 players in PVP Run",
+                            "goal": "3",
+                            "id": "tnt_pvprun_daily"
+                        }
+                    ]
+                },
+                {
+                    "tnt_bowspleef_daily": [
+                        {
+                            "text": "Survive longer than a total of 40 players",
+                            "goal": "40",
+                            "id": "tnt_bowspleef_daily"
+                        }
+                    ]
+                },
+                {
+                    "tnt_tnttag_daily": [
+                        {
+                            "text": "Survive 7 rounds in total",
+                            "goal": "7",
+                            "id": "tnt_tnttag_daily"
+                        }
+                    ]
+                },
+                {
+                    "tnt_wizards_daily": [
+                        {
+                            "text": "Get 10 kills in TNT Wizards",
+                            "goal": "10",
+                            "id": "tnt_wizards_daily_kills"
+                        }
+                    ]
+                },
+                {
+                    "tnt_daily_win": [
+                        {
+                            "text": "Win a game of TNT Games",
+                            "goal": "1",
+                            "id": "tnt_daily_win"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "the_pit": [
+                {
+                    "prototype_pit_daily_kills": [
+                        {
+                            "text": "Kill 25 players",
+                            "goal": "25",
+                            "id": "kill"
+                        }
+                    ]
+                },
+                {
+                    "prototype_pit_daily_contract": [
+                        {
+                            "text": "Complete a contract",
+                            "goal": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uhc": [
+                {
+                    "uhc_solo": [
+                        {
+                            "text": "Kill 1 player in Solo UHC Champions",
+                            "goal": "1",
+                            "id": "uhc_kills"
+                        },
+                        {
+                            "text": "Play 1 game of Solo UHC Champions",
+                            "goal": "1",
+                            "id": "uhc_games"
+                        }
+                    ]
+                },
+                {
+                    "uhc_team": [
+                        {
+                            "text": "Kill 1 player in Team UHC Champions",
+                            "goal": "1",
+                            "id": "uhc_kills"
+                        },
+                        {
+                            "text": "Play 1 game of Team UHC Champions",
+                            "goal": "1",
+                            "id": "uhc_games"
+                        }
+                    ]
+                },
+                {
+                    "uhc_dm": [
+                        {
+                            "text": "Kill 2 players during a UHC Champions Deathmatch",
+                            "goal": "2",
+                            "id": "uhc_kills"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "vampirez": [
+                {
+                    "vampirez_daily_play": [
+                        {
+                            "text": "Play a game of VampireZ",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "vampirez_daily_kill": [
+                        {
+                            "text": "Kill 20 zombies in VampireZ",
+                            "goal": "20",
+                            "id": "vampirez_daily_kill_zombie"
+                        },
+                        {
+                            "text": "Kill 10 vampires in VampireZ",
+                            "goal": "10",
+                            "id": "vampirez_daily_kill_vampire"
+                        }
+                    ]
+                },
+                {
+                    "vampirez_daily_win": [
+                        {
+                            "text": "As a Survivor Win a game of VampireZ",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "vampirez_daily_human_kill": [
+                        {
+                            "text": "Kill 10 survivors",
+                            "goal": "10",
+                            "id": "vampirez_daily_kill_human"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "walls": [
+                {
+                    "walls_daily_play": [
+                        {
+                            "text": "Play a game of Walls",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "walls_daily_win": [
+                        {
+                            "text": "Win a game of Walls",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "walls_daily_kill": [
+                        {
+                            "text": "Kill a total of 5 players",
+                            "goal": "5",
+                            "id": "walls_daily_kill"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "warlords": [
+                {
+                    "warlords_victorious": [
+                        {
+                            "text": "Win 1 match of Warlords",
+                            "goal": "1"
+                        }
+                    ]
+                },
+                {
+                    "warlords_ctf": [
+                        {
+                            "text": "Complete 1 match with at least 10 kills/assists in CTF",
+                            "goal": "10"
+                        }
+                    ]
+                },
+                {
+                    "warlords_tdm": [
+                        {
+                            "text": "Complete 1 match with at least 10 kills/assists in TDM",
+                            "goal": "10"
+                        }
+                    ]
+                },
+                {
+                    "warlords_domination": [
+                        {
+                            "text": "Complete 1 match with at least 15 kills/assists in DOM",
+                            "goal": "15"
+                        }
+                    ]
+                },
+                {
+                    "warlords_objectives": [
+                        {
+                            "text": "Earn 100 points from completing objectives",
+                            "goal": "100"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

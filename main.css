@@ -1,0 +1,325 @@
+#parent{
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.fc-more-popover{
+   max-height: 600px;
+   overflow-y: scroll;
+}
+
+#child{
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    padding-right: 17px; /* Increase/decrease this value for cross-browser compatibility */
+}
+
+.display-4 {
+    text-align: center;
+    font-size: 3em;
+    font-weight: 200;
+    margin: 0;
+}
+
+.display-5 {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 100
+}
+
+u {
+    border-bottom: 1px dotted #000;
+    text-decoration: none;
+}
+
+u.dark {
+    border-bottom: 1px dotted #fff;
+}
+
+.box {
+    border-radius: 10px;
+    padding: 25px;
+}
+
+.quest-list {
+    padding: 0;
+}
+
+#stats-group-quests, #stats-group-general {
+    margin-bottom: 20px;
+}
+
+#stats {
+    margin-bottom: 50px;
+}
+
+.panel-heading {
+    color: rgb(121, 121, 121);
+}
+
+a:link {
+    text-decoration: none;
+}
+
+.individual-quest {
+    background-color: #FFFFFF;
+}
+
+.individual-quest.list-group-item {
+    border-radius: 0;
+}
+
+.individual-game.list-group-item:first-child {
+    border-radius: 0;
+}
+
+.individual-game.list-group-item:last-child {
+    border-radius: 0;
+}
+
+.individual-game {
+    background-color: #eee;
+    border-radius: .25rem;
+}
+
+.info {
+    border-radius: 0px !important;
+}
+
+.quest {
+    border-radius: 0px !important;
+    background-color: #efefef;
+}
+
+.badge-warning {
+    color: white;
+}
+
+.badge {
+    height: 18px;
+}
+
+.hidden {
+    display: none;
+}
+
+body.dark {
+  background-color: rgb(30,34,39);
+  color: #c1c1c1;
+}
+
+.progress.dark {
+    background-color: #1e2227;
+}
+
+.progress.dark2 {
+    background-color: black;
+}
+
+.modal-content.dark {
+  color: #c1c1c1;
+  border: white;
+  background-color: rgb(30,34,39);
+}
+
+.card.dark {
+  color: #c1c1c1;
+  border: white;
+  background-color: black !important;
+  border-color: white !important;
+}
+
+#info a.dark {
+    color: #c1c1c1;
+}
+
+.form-control.dark, .form-control.dark:active {
+    background-color: #c1c1c1;
+}
+
+.table-dark {
+  color: #c1c1c1 !important
+}
+
+.badge.badge-pill.badge-warning {
+    color: white;
+}
+
+.list-group-item.dark {
+  background-color: black;
+}
+
+a.list-group-item.dark {
+  color: #c1c1c1;
+}
+
+.modal-content.dark {
+  background-color: rgb(30,34,39);
+}
+
+.dropdown-menu.dark {
+  background-color: black;
+}
+
+.dropdown-item.dark {
+  color: #c1c1c1;
+}
+
+.dropdown-item.dark:hover {
+  color: #5e5e5e;
+  background-color: black;
+}
+
+.dropdown-item.dark.active {
+  background-color: #202528;
+  color: #c1c1c1;
+}
+
+.nav-link.dark.active {
+  background-color: black;
+  color: #c1c1c1;
+}
+
+.fc-title, .fc-close {
+  color: black;
+}
+
+.table-active.dark > * {
+    background: #4a4a4a !important;
+}
+
+.fc-today {
+    font-weight: bold;
+    color: #38a1b2;
+}
+
+.nav-link.dropdown-toggle.dark {
+  background-color: black !important;
+  color: #c1c1c1 !important;
+}
+
+.nav-link.dropdown-toggle.dark.active {
+  background-color: black !important;
+  color: #c1c1c1 !important;
+}
+
+.card.dark1 {
+  color: #c1c1c1;
+  border: white;
+  background-color: rgb(30,34,39) !important;
+}
+
+body.dark code[class*=language-],
+body.dark table tbody>tr:nth-child(odd)>td,
+body.dark table tbody>tr:nth-child(odd)>th {
+  background: #282c34
+}
+
+.navbar .navbar-collapse {
+    text-align: center;
+}
+
+
+#bottle {
+    position:absolute;
+    z-index:auto;
+}
+#orb {
+    position:absolute;
+    z-index:1;
+    left:25px;
+    top:25px;
+}
+
+.sk-folding-cube {
+  margin: 40px auto;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  -webkit-transform: rotateZ(45deg);
+          transform: rotateZ(45deg); }
+  .sk-folding-cube .sk-cube {
+    float: left;
+    width: 50%;
+    height: 50%;
+    position: relative;
+    -webkit-transform: scale(1.1);
+        -ms-transform: scale(1.1);
+            transform: scale(1.1); }
+  .sk-folding-cube .sk-cube:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+    -webkit-animation: sk-foldCubeAngle 2.4s infinite linear both;
+            animation: sk-foldCubeAngle 2.4s infinite linear both;
+    -webkit-transform-origin: 100% 100%;
+        -ms-transform-origin: 100% 100%;
+            transform-origin: 100% 100%;
+    }
+  .sk-folding-cube .sk-cube2 {
+    -webkit-transform: scale(1.1) rotateZ(90deg);
+            transform: scale(1.1) rotateZ(90deg); }
+  .sk-folding-cube .sk-cube3 {
+    -webkit-transform: scale(1.1) rotateZ(180deg);
+            transform: scale(1.1) rotateZ(180deg); }
+  .sk-folding-cube .sk-cube4 {
+    -webkit-transform: scale(1.1) rotateZ(270deg);
+            transform: scale(1.1) rotateZ(270deg); }
+  .sk-folding-cube .sk-cube2:before {
+    -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s; }
+  .sk-folding-cube .sk-cube3:before {
+    -webkit-animation-delay: 0.6s;
+            animation-delay: 0.6s; }
+  .sk-folding-cube .sk-cube4:before {
+    -webkit-animation-delay: 0.9s;
+            animation-delay: 0.9s; }
+
+@-webkit-keyframes sk-foldCubeAngle {
+  0%, 10% {
+    -webkit-transform: perspective(140px) rotateX(-180deg);
+            transform: perspective(140px) rotateX(-180deg);
+    opacity: 0; }
+  25%, 75% {
+    -webkit-transform: perspective(140px) rotateX(0deg);
+            transform: perspective(140px) rotateX(0deg);
+    opacity: 1; }
+  90%, 100% {
+    -webkit-transform: perspective(140px) rotateY(180deg);
+            transform: perspective(140px) rotateY(180deg);
+    opacity: 0; } }
+
+@keyframes sk-foldCubeAngle {
+  0%, 10% {
+    -webkit-transform: perspective(140px) rotateX(-180deg);
+            transform: perspective(140px) rotateX(-180deg);
+    opacity: 0; }
+  25%, 75% {
+    -webkit-transform: perspective(140px) rotateX(0deg);
+            transform: perspective(140px) rotateX(0deg);
+    opacity: 1; }
+  90%, 100% {
+    -webkit-transform: perspective(140px) rotateY(180deg);
+            transform: perspective(140px) rotateY(180deg);
+    opacity: 0; } }
+
+.list-group-item.active {
+    background-color: rgba(0, 123, 255, 0.25);
+    border-color: rgba(0, 123, 255, 0.25);
+    color: #212529;
+}
+
+.list-group {
+    margin-bottom: 1em;
+}
+
+.percentages {
+    font-weight: lighter;
+    font-size: small;
+}

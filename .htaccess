@@ -1,0 +1,8 @@
+Options +FollowSymLinks
+RewriteEngine on
+RewriteRule ^quests/([A-Za-z0-9_]+)/?$ /quests/index.php?ign=$1 [NC]
+RewriteRule ^achievements/([A-Za-z0-9_]+)/?$ /achievements/index.php?ign=$1 [NC]
+ErrorDocument 404 /404.php
+php_flag display_errors off
+RewriteCond %{HTTPS}  !=on
+RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
