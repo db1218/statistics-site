@@ -2,6 +2,7 @@ Options +FollowSymLinks
 RewriteEngine on
 RewriteRule ^quests/([A-Za-z0-9_]+)/?$ /quests/index.php?ign=$1 [NC]
 RewriteRule ^achievements/([A-Za-z0-9_]+)/?$ /achievements/index.php?ign=$1 [NC]
+RewriteRule ^dev/achievements/([A-Za-z0-9_]+)/?$ /dev/achievements/index.php?ign=$1 [NC]
 ErrorDocument 404 /404.php
 php_flag display_errors off
 RewriteCond %{HTTPS}  !=on

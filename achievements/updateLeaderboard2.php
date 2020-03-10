@@ -1,6 +1,7 @@
 <?php
 
-    ini_set('display_errors', 0);
+    $credentials = include('../credentials.php');
+
     $request = file_get_contents("php://input");
     $nameInput = json_decode($request);
     $ign = urlencode($nameInput->ign);
@@ -9,13 +10,9 @@
     $maxed = urlencode($nameInput->maxed);
     $maxedCount = urlencode($nameInput->maxedCount);
 
-    $servername = "";
-    $username = "";
-    $password = "";
-    $dbname = "";
+    // Crate connection
+    $conn = mysqli_connect($credentials['host'], $credentials['username'], $credentials['password'], "achievements");
 
-    // Create connection
-    $conn = mysqli_connect($servername, $username, $password, $dbname);
 
     // if connection error
     if ($conn->connect_error) {

@@ -1,7 +1,5 @@
 <?php
 
-    ini_set('display_errors', 0);
-
     $response = null;
 
     $json_info = file_get_contents("dailyQuestInfo.json");

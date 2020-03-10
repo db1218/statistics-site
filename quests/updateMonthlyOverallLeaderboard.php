@@ -1,18 +1,15 @@
 <?php
 
+    $credentials = include('../credentials.php');
+
     $request = file_get_contents("php://input");
     $nameInput = json_decode($request);
     $uuid = $nameInput->uuid;
     $quests = $nameInput->quests;
     $ign = $nameInput->ign;
 
-    $servername = "";
-    $username = "";
-    $password = "";
-    $dbname = "";
-
     // Create connection
-    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    $conn = mysqli_connect($credentials['host'], $credentials['username'], $credentials['password'], $credentials['dbname']);
 
     // if connection error
     if ($conn->connect_error) {

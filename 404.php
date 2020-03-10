@@ -1,6 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-KHVQV8L');</script>
+        <!-- End Google Tag Manager -->
 
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,11 +28,11 @@
         <!-- jQuery -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-        <!-- Local files -->
-        <link href="https://notifly.zone/main.css" rel="stylesheet" type="text/css">
-
         <!-- Font Awesome -->
         <script src="https://use.fontawesome.com/de8c2544bf.js"></script>
+
+        <!-- Local files -->
+        <link href="main.css" rel="stylesheet" type="text/css">
 
         <style>
 
@@ -55,10 +63,10 @@
                 <div class="modal-header">
                     <div style="margin: auto; width: 50%; pointer-events: none">
                         <h1 class="modal-title display-1">
-                            <center>404</center>
+                            <div style="text-align: center;">404</div>
                         </h1>
                         <h5>
-                            <center>Page not found</center>
+                            <div style="text-align: center;">Page not found</div>
                         </h5>
                     </div>
                 </div>

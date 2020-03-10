@@ -2,6 +2,14 @@
 <html>
     <head>
 
+        <!-- Google Tag Manager -->
+        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-KHVQV8L');</script>
+        <!-- End Google Tag Manager -->
+
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -57,11 +65,14 @@
                     <div class="modal-content" style="border: none">
                         <h1 id="headingLoad" class="display-4" style="pointer-events: none; width: 100%">
                             <?php
+                                $credentials = include('../credentials.php');
+                                $key = $credentials['api-key'];
+
                                 $ign = $_GET["ign"];
                                 if (strlen($ign) > 16) {
-                                  $url = file_get_contents("https://api.hypixel.net/player?key=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX&uuid=$ign");
+                                  $url = file_get_contents("https://api.hypixel.net/player?key=$key&uuid=$ign");
                                 } else {
-                                  $url = file_get_contents("https://api.hypixel.net/player?key=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX&name=$ign");
+                                  $url = file_get_contents("https://api.hypixel.net/player?key=$key&name=$ign");
                                 }
                                 $JSONobj = json_decode($url);
 

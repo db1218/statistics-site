@@ -1,12 +1,13 @@
 <?php
 
-    ini_set('display_errors', 0);
+    $credentials = include('../credentials.php');
+    $key = $credentials['api-key'];
+
     $request = file_get_contents("php://input");
     $nameInput = json_decode($request);
     $ignEncoded = urlencode($nameInput->ign);
 
-    ini_set("allow_url_fopen", 1);
-    $url = file_get_contents("https://api.hypixel.net/player?key=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX&name=$ignEncoded");
+    $url = file_get_contents("https://api.hypixel.net/player?key=$key&name=$ignEncoded");
 
     $JSONobj = json_decode($url);
 

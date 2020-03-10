@@ -1,24 +1,19 @@
 <?php
 
-    ini_set('display_errors', 0);
+    $credentials = include('../credentials.php');
+
     $request = file_get_contents("php://input");
     $nameInput = json_decode($request);
     $ign = urlencode($nameInput->ign);
     $game = urlencode($nameInput->game);
     $num = urlencode($nameInput->num);
 
-    ini_set("allow_url_fopen", 1);
     $url = file_get_contents("https://api.mojang.com/users/profiles/minecraft/$ign");
     $JSONobj = json_decode($url);
     $uuid = $JSONobj->id;
 
-    $servername = "";
-    $username = "";
-    $password = "";
-    $dbname = "";
-
     // Create connection
-    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    $conn = mysqli_connect($credentials['host'], $credentials['username'], $credentials['password'],"achievements");
 
     // if connection error
     if ($conn->connect_error) {

@@ -1,5 +1,4 @@
 <?php
-    ini_set("allow_url_fopen", 1);
     $url = file_get_contents("https://api.hypixel.net/resources/achievements");
     $JSONobj = json_decode($url);
     $apiLastUpdated = $JSONobj->lastUpdated;
