@@ -15,6 +15,19 @@
     if ($playerData == null) {
         echo "Player not found";
     } else {
-        $response = array($playerData->achievements, $playerData->achievementsOneTime, $playerData->achievementPoints, $playerData->networkExp, $playerData->networkLevel, $playerData->newPackageRank, $playerData->rankPlusColor, $playerData->displayname, $playerData->monthlyPackageRank, $playerData->packageRank, $playerData->monthlyRankColor, $playerData->rank, $playerData->uuid, $playerData->quests);
+        $response = array('achievements' => $playerData->achievements,
+            'achievementsOneTime' => $playerData->achievementsOneTime,
+            'achievementPoints' => $playerData->achievementPoints,
+            'networkExp' => $playerData->networkExp,
+            'networkLevel' => $playerData->networkLevel,
+            'newPackageRank' => $playerData->newPackageRank,
+            'rankPlusColor' => $playerData->rankPlusColor,
+            'displayname' => $playerData->displayname,
+            'monthlyPackageRank' => $playerData->monthlyPackageRank,
+            'packageRank' => $playerData->packageRank,
+            'monthlyRankColor' => $playerData->monthlyRankColor,
+            'rank' => $playerData->rank,
+            'uuid' => $playerData->uuid,
+            'quests' => $playerData->quests);
         echo json_encode($response);
     }

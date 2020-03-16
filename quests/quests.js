@@ -1,4 +1,4 @@
-import { getDisplayName, colourParser } from "./Utilities/FormatName.js";
+import { getDisplayName, colourParser } from "../Utilities/FormatName.js";
 
 $(function() {
 

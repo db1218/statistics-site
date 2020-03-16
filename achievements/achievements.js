@@ -1,3 +1,5 @@
+import { getDisplayName, colourParser } from "../Utilities/FormatName.js";
+
 $(function() {
 
     $('[data-toggle="tooltip"]').tooltip();
@@ -18,7 +20,7 @@ $(function() {
 
     darkmode();
 
-    lightmode = localStorage.getItem('mode');
+    let lightmode = localStorage.getItem('mode');
 
     $("#darkmode").click(function() {
         localStorage.setItem('mode', (localStorage.getItem('mode') || 'dark') === 'dark' ? 'light' : 'dark');
@@ -46,7 +48,7 @@ $(function() {
                 $(this).children(".nav-link.dropdown-toggle.dark").removeClass("dark");
             }
         }
-    })
+    });
 
     var ign = $("#ign").html().trim();
     var nameInputObj = {
@@ -66,22 +68,19 @@ $(function() {
 
     $.get("https://api.hypixel.net/resources/achievements", function (response) {
 
-        var achievementObject = response;
-        achievementsInfo = response.achievements;
+        const achievementObject = response;
+        const achievementsInfo = response.achievements;
 
         $.post("get_data.php", JSON.stringify(nameInputObj), function(response) {
 
-            var achievementsTiered = JSON.parse(response)[0];
-            var achievementsOneTime = JSON.parse(response)[1];
+            const resp = JSON.parse(response);
 
-            var achievementPointsOfficial = JSON.parse(response)[2];
+            var achievementsTiered = resp.achievements;
+            var achievementsOneTime = resp.achievementsOneTime;
 
-            var uuidNameObj = {
-                uuid: JSON.parse(response)[12],
-                ign: JSON.parse(response)[6]
-            };
+            var achievementPointsOfficial = resp.achievementPoints;
 
-            $.post("getNames.php", JSON.stringify(uuidNameObj), function(names) {
+            $.post("getNames.php", JSON.stringify({uuid: resp.uuid, ign: resp.displayname}), function(names) {
                 var namesParsed = JSON.parse(names);
                 var namesString = namesParsed[0];
                 for (var i=1; i<namesParsed.length;i++) {
@@ -94,201 +93,11 @@ $(function() {
             infoBox(response);
             function infoBox(response) {
 
-                var quests = JSON.parse(response)[13];
+                var quests = resp.quests;
 
-                $("#heading").html(formatRank(JSON.parse(response)[5], JSON.parse(response)[6], JSON.parse(response)[7], JSON.parse(response)[8], JSON.parse(response)[9], JSON.parse(response)[10], JSON.parse(response)[11]));
-                function formatRank(rank, rankColour, name, monthlyPackageRank, oldRank, rankNameColour, staffRank) {
-                    if (staffRank == "HELPER") {
-                        if (lightmode === "dark") {
-                            prefix = "<span style='text-shadow: 1px 1px #858585; color:#5555FF'>[HELPER] " + name + "</span>"
-                        } else {
-                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#5555FF'>[HELPER] " + name + "</span>"
-                        }
-                    } else if (staffRank == "MODERATOR") {
-                        if (lightmode === "dark") {
-                            prefix = "<span style='text-shadow: 1px 1px #414141; color:#008000'>[MOD] " + name + "</span>"
-                        } else {
-                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#008000'>[MOD] " + name + "</span>"
-                        }
-                    } else if (staffRank == "ADMIN") {
-                        if (lightmode === "dark") {
-                            prefix = "<span style='text-shadow: 1px 1px #3f3f3f; color:#FF5555'>[ADMIN] " + name + "</span>"
-                        } else {
-                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#FF5555'>[ADMIN] " + name + "</span>"
-                        }
-                    } else if (staffRank == "YOUTUBER") {
-                        if (lightmode === "dark") {
-                            prefix = "<span style='text-shadow: 1px 1px #373737; color:#FF5555'>[</span><span style='text-shadow: 1px 1px #373737; color:#FFFFFF'>YOUTUBE</span><span style='text-shadow: 1px 1px #373737; color:#FF5555'>] " + name + "</span>"
-                        } else {
-                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#FF5555'>[</span><span style='text-shadow: 1px 1px #eee; color:#FFFFFF'>YOUTUBE</span><span style='text-shadow: 1px 1px #eee; color:#FF5555'>] " + name + "</span>"
-                        }
-                    } else {
-                        if (rank) {
-                            switch (rank) {
-                                case "MVP_PLUS":
+                const rankString = getDisplayName(resp.packageRank, resp.newPackageRank, resp.rankPlusColor, resp.displayname, resp.monthlyRankColor, resp.rank, resp.monthlyPackageRank);
 
-                                    var colour = "";
-                                    var prefix = "";
-
-                                    if (monthlyPackageRank == "SUPERSTAR") {
-
-                                        colour = getRankColour(rankColour);
-
-                                        if (rankNameColour == "AQUA") {
-                                            if (lightmode === "dark") {
-                                                prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>] " + name + "</span>";
-                                            } else {
-                                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>] " + name + "</span>";
-                                            }
-
-                                        } else {
-                                            if (lightmode === "dark") {
-                                                prefix = "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #444; color:#FFAA00'>] " + name + "</span>";
-                                            } else {
-                                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>] " + name + "</span>";
-                                            }
-                                        }
-
-                                    } else {
-
-                                        colour = getRankColour(rankColour);
-
-                                        if (lightmode === "dark") {
-                                            prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>+<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>] " + name + "</span>";
-                                        } else {
-                                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>+<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>] " + name + "</span>";
-                                        }
-                                    }
-                                    break;
-                                case "MVP":
-                                    if (lightmode === "dark") {
-                                        prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP] " + name + "</span>";
-                                    } else {
-                                        prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP] " + name + "</span>";
-                                    }
-                                    break;
-                                case "VIP_PLUS":
-                                    if (lightmode === "dark") {
-                                        prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE63C'>[VIP" + "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>+<span style='text-shadow: 1px 1px #444; color:#3CE63C'>] " + name + "</span>";
-                                    } else {
-                                        prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE63C'>[VIP" + "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>+<span style='text-shadow: 1px 1px #eee; color:#3CE63C'>] " + name + "</span>";
-                                    }
-                                    break;
-                                case "VIP":
-                                    if (lightmode === "dark") {
-                                        prefix = "<p style='text-shadow: 1px 1px #444; color:#3CE63C'>[VIP] " + name;
-                                    } else {
-                                        prefix = "<p style='text-shadow: 1px 1px #eee; color:#3CE63C'>[VIP] " + name;
-                                    }
-                                    break
-                            }
-                        } else if (oldRank) {
-                            switch (oldRank) {
-                                case "MVP_PLUS":
-
-                                    var colour = "";
-                                    var prefix = "";
-
-                                    if (monthlyPackageRank == "SUPERSTAR") {
-
-                                        switch (rankColour) {
-                                            case "BLACK":
-                                                colour = "000000"
-                                                break;
-                                            case "DARK_GRAY":
-                                                colour = "555555"
-                                                break;
-                                            case "DARK_PURPLE":
-                                                colour = "AA00AA"
-                                                break;
-                                            case "DARK_GREEN":
-                                                colour = "008000"
-                                                break;
-                                            case "DARK_RED":
-                                                colour = "AA0000"
-                                                break;
-                                            case "PINK":
-                                                colour = "FF55FF"
-                                                break;
-                                            case "WHITE":
-                                                colour = "FFFFFF"
-                                                break;
-                                            case "BLUE":
-                                                colour = "5555FF"
-                                                break;
-                                            case "YELLOW":
-                                                colour = "FFFF55"
-                                                break;
-                                            case "GOLD":
-                                                colour = "FFAA00"
-                                                break;
-                                            case "DARK_AQUA":
-                                                colour = "00AAAA"
-                                                break;
-                                            default:
-                                                colour = "FF5555"
-
-                                        }
-                                        if (rankNameColour == "AQUA") {
-                                            if (lightmode === "dark") {
-                                                prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>] " + name + "</span>";
-                                            } else {
-                                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>] " + name + "</span>";
-                                            }
-
-                                        } else {
-                                            if (lightmode === "dark") {
-                                                prefix = "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #444; color:#FFAA00'>] " + name + "</span>";
-                                            } else {
-                                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>] " + name + "</span>";
-                                            }
-                                        }
-                                    } else {
-
-                                        colour = getRankColour(rankColour);
-
-                                        if (lightmode === "dark") {
-                                            prefix = "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>+<span style='text-shadow: 1px 1px #444; color:#FFAA00'>] " + name + "</span>";
-                                        } else {
-                                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>+<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>] " + name + "</span>";
-                                        }
-
-                                    }
-                                    break;
-                                    case "MVP":
-                                        if (lightmode === "dark") {
-                                            prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP] " + name + "</span>";
-                                        } else {
-                                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP] " + name + "</span>";
-                                        }
-                                        break;
-                                    case "VIP_PLUS":
-                                        if (lightmode === "dark") {
-                                            prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE63C'>[VIP" + "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>+<span style='text-shadow: 1px 1px #444; color:#3CE63C'>] " + name + "</span>";
-                                        } else {
-                                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE63C'>[VIP" + "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>+<span style='text-shadow: 1px 1px #eee; color:#3CE63C'>] " + name + "</span>";
-                                        }
-                                        break;
-                                    case "VIP":
-                                        if (lightmode === "dark") {
-                                            prefix = "<p style='text-shadow: 1px 1px #444; color:#3CE63C'>[VIP] " + name;
-                                        } else {
-                                            prefix = "<p style='text-shadow: 1px 1px #eee; color:#3CE63C'>[VIP] " + name;
-                                        }
-                                        break
-                            }
-                        } else if (rank == "NONE" || oldRank == "NONE" || (!oldRank && !rank)) {
-                            if (lightmode === "dark") {
-                                prefix = "<span style='text-shadow: 1px 1px #444; color:#AAAAAA'>" + name + "</span>"
-                            } else {
-                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#AAAAAA'>" + name + "</span>"
-                            }
-                        }
-
-                    }
-
-                    return prefix
-                }
+                $("#heading").html(colourParser(rankString));
 
                 // print quests
                 printNumQuests(quests);
@@ -330,8 +139,8 @@ $(function() {
                 }
 
                 function printLevel(response) {
-                    var exp = JSON.parse(response)[3];
-                    var newExp = JSON.parse(response)[4];
+                    var exp = resp.networkExp;
+                    var newExp = resp.networkLevel;
 
                     var level = "<div class='col-sm'>Network Level <span class='badge badge-pill badge-secondary'>" + getNetworkLevel(exp, newExp) + "</span></div>";
                     $("#info").append(level);
@@ -358,22 +167,22 @@ $(function() {
                 var achievementsGrandTotal = 0;
                 var achievementsGrandDone = 0;
 
-                gameStrings = ["skywars", "arcade", "vampirez", "walls3", "warlords", "quake",
+                const gameStrings = ["skywars", "arcade", "vampirez", "walls3", "warlords", "quake",
                 "walls", "blitz", "tntgames", "gingerbread", "paintball", "supersmash", "copsandcrims", "truecombat",
                 "arena", "uhc", "bedwars", "murdermystery", "buildbattle",
                 "duels", "prototype", "speeduhc", "skyblock"];
 
-                specialStrings = ["general", "halloween2017", "easter", "christmas2017", "housing"];
+                const specialStrings = ["general", "halloween2017", "easter", "christmas2017", "housing"];
 
                 var allStrings = gameStrings.concat(specialStrings);
                 var totalAchievementPoints = 0;
 
                 $.get("updates/oldAchievements.php", function (response) {
-                    parsedResponse = JSON.parse(response);
-                    newAchievements = achievementObject.achievements;
-                    if (parsedResponse[0] == 1) {
-                        oldAchievements = JSON.parse(parsedResponse[1]);
-                        newAchievementsList = [];
+                    const parsedResponse = JSON.parse(response);
+                    const newAchievements = achievementObject.achievements;
+                    if (parsedResponse[0] === 1) {
+                        const oldAchievements = JSON.parse(parsedResponse[1]);
+                        var newAchievementsList = [];
                         $.each(newAchievements, function(newGame, newGameObject) {
                             $.each(newGameObject.one_time, function(newAchievement, newAchievementObject) {
                                 newAchievementsList.push(newGame + " one_time " + newAchievement);
@@ -383,7 +192,7 @@ $(function() {
                             });
                         });
 
-                        oldAchievementsList = [];
+                        var oldAchievementsList = [];
                         $.each(oldAchievements, function(oldGame, oldGameObject) {
                             $.each(oldGameObject.one_time, function(oldAchievement, oldAchievementObject) {
                                 oldAchievementsList.push(oldGame + " one_time " + oldAchievement);
@@ -392,7 +201,7 @@ $(function() {
                                 oldAchievementsList.push(oldGame + " tiered " + oldAchievement);
                             });
                         });
-                        difference = newAchievementsList.diff(oldAchievementsList);
+                        const difference = newAchievementsList.diff(oldAchievementsList);
                         if (difference.length > 0) {
                             $.post("updates/addNewAchievement.php", JSON.stringify({time:parsedResponse[2],path:difference}));
                         }
@@ -404,11 +213,11 @@ $(function() {
                         // for each game (info)
                         $.each(achievementsInfo, function(game, gameObject) {
 
-                            hasNewAchievement = false;
-                            totalPoints = 0;
-                            points = 0;
-                            achievementsDone = 0;
-                            achievementsTotal = 0;
+                            var hasNewAchievement = false;
+                            var totalPoints = 0;
+                            var points = 0;
+                            var achievementsDone = 0;
+                            var achievementsTotal = 0;
 
                             achievementList += "    <div class='tab-pane fade' id='list-" + game + "' role='tabpanel' aria-labelledby='list-" + game + "-list'>";
                             achievementList += "        <h2>" + getEnGameNames(game) + "</h2>";
@@ -435,7 +244,7 @@ $(function() {
                                 if (achievementObject.legacy != true) {
                                     var tableRow = "";
                                     tableRow += "            <tr>";
-                                    hasNew = false;
+                                    var hasNew = false;
                                     $.each(newAchievementList, function(key, value) {
                                         if (game + " tiered " + achievementName == value.path[0]) {
                                             hasNewAchievement = true;
@@ -464,7 +273,7 @@ $(function() {
                                                 savedAmount = achievementObject.tiers[tier].amount;
                                                 topAmount = achievementObject.tiers[tier].amount;
                                             } else {
-                                                if (completed == true) {
+                                                if (completed === true) {
                                                     savedAmount = achievementObject.tiers[tier].amount;
                                                     achievementListPart += "      <span class='badge badge-warning badge-pill'>" + achievementObject.tiers[tier].points + "</span>";
                                                     completed = false;
@@ -500,7 +309,7 @@ $(function() {
                                 if (achievementObject.legacy != true) {
                                     var tableRow = "";
                                     tableRow += "            <tr>";
-                                    hasNew = false;
+                                    var hasNew = false;
                                     $.each(newAchievementList, function(key, value) {
                                         if (game + " one_time " + achievementName == value.path[0]) {
                                             hasNewAchievement = true;
@@ -617,7 +426,7 @@ $(function() {
 
                         });
 
-                        achievementListEnd = "";
+                        var achievementListEnd = "";
                         achievementListEnd += "    <div class='tab-pane fade show active' id='list-overall' role='tabpanel' aria-labelledby='list-overall-list'>";
                         achievementListEnd += "        <h2>Overall</h2>";
                         achievementListEnd += "        <div class='card'>";
@@ -708,10 +517,8 @@ $(function() {
 
             // Leaderboard tab
             function leaderboardTab(ign, achievementsDB, maxedGames) {
-                ignObj = {"ign": ign, "achievements": achievementsDB, "uuid": JSON.parse(response)[12], "maxed": maxedGames};
-                $.post("updateLeaderboard.php", JSON.stringify(ignObj), function (users) {
-                    ignObj = {"ign": ign, "game": "all", "num": 250};
-                    $.post("displayLeaderboard.php", JSON.stringify(ignObj), function (users) {
+                $.post("updateLeaderboard.php", JSON.stringify({"ign": ign, "achievements": achievementsDB, "uuid": resp.uuid, "maxed": maxedGames}), function (users) {
+                    $.post("displayLeaderboard.php", JSON.stringify({"ign": ign, "game": "all", "num": 250}), function (users) {
 
                         users = JSON.parse(users);
 
@@ -725,7 +532,7 @@ $(function() {
 
                         $("#thead").html(head);
 
-                        for (index in users[0]) {
+                        for (var index in users[0]) {
                             var record = "";
 
                             if (users[0][index].ign == ign) {
@@ -784,6 +591,7 @@ $(function() {
 
     $(".games").on("click", function() {
         var game = $(this).attr("id");
+        var ignObj;
         if (game == "all") {
             ignObj = {"ign": ign, "game": game, "num": 250};
         } else {
@@ -1516,37 +1324,37 @@ function getRankColour(rankColour) {
 
     switch (rankColour) {
         case "BLACK":
-            colour = "000000"
+            colour = "000000";
             break;
         case "DARK_GRAY":
-            colour = "555555"
+            colour = "555555";
             break;
         case "DARK_PURPLE":
-            colour = "AA00AA"
+            colour = "AA00AA";
             break;
         case "DARK_GREEN":
-            colour = "008000"
+            colour = "008000";
             break;
         case "DARK_RED":
-            colour = "AA0000"
+            colour = "AA0000";
             break;
         case "PINK":
-            colour = "FF55FF"
+            colour = "FF55FF";
             break;
         case "WHITE":
-            colour = "FFFFFF"
+            colour = "FFFFFF";
             break;
         case "BLUE":
-            colour = "5555FF"
+            colour = "5555FF";
             break;
         case "YELLOW":
-            colour = "FFFF55"
+            colour = "FFFF55";
             break;
         case "GOLD":
-            colour = "FFAA00"
+            colour = "FFAA00";
             break;
         case "DARK_AQUA":
-            colour = "00AAAA"
+            colour = "00AAAA";
             break;
         default:
             colour = "FF5555"
@@ -1561,9 +1369,9 @@ function convertData(data, firstLogin) {
     var day = new Date();
     var endDay = day.getTime();
 
-    isLastDay = startDay == endDay;
-    dayTick = 1000 * 60 * 60 * 24;
-    temp = [];
+    var isLastDay = startDay == endDay;
+    var dayTick = 1000 * 60 * 60 * 24;
+    var temp = [];
 
     //Create new array with 0 values for each day
     temp.push([startDay, 0])
