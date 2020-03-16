@@ -12,12 +12,20 @@
     $JSONobj = json_decode($url);
 
     if ($JSONobj->player == null) {
-        if ($JSONobj->success == null) {
-            echo "api";
-        } else {
-            echo "player";
-        }
+        echo ($JSONobj->success == null) ? "api" : "player";
     } else {
-        $response = array($JSONobj->player->quests, $JSONobj->player->networkExp, $JSONobj->player->networkLevel, $JSONobj->player->firstLogin, $JSONobj->player->newPackageRank, $JSONobj->player->rankPlusColor, $JSONobj->player->displayname, $JSONobj->player->monthlyPackageRank, $JSONobj->player->packageRank, $JSONobj->player->monthlyRankColor, $JSONobj->player->rank, $JSONobj->player->achievementPoints, $JSONobj->player->uuid);
+        $response = array('quests' => $JSONobj->player->quests,
+            'networkExp' => $JSONobj->player->networkExp,
+            'networkLevel' => $JSONobj->player->networkLevel,
+            'firstLogin' => $JSONobj->player->firstLogin,
+            'newPackageRank' => $JSONobj->player->newPackageRank,
+            'rankPlusColor' => $JSONobj->player->rankPlusColor,
+            'displayname' => $JSONobj->player->displayname,
+            'monthlyPackageRank' => $JSONobj->player->monthlyPackageRank,
+            'packageRank' => $JSONobj->player->packageRank,
+            'monthlyRankColor' => $JSONobj->player->monthlyRankColor,
+            'rank' => $JSONobj->player->rank,
+            'achievementPoints' => $JSONobj->player->achievementPoints,
+            'uuid' => $JSONobj->player->uuid);
         echo json_encode($response);
     }

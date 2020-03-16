@@ -1,3 +1,5 @@
+import { getDisplayName, colourParser } from "./Utilities/FormatName.js";
+
 $(function() {
 
     $('[data-toggle="tooltip"]').tooltip();
@@ -14,7 +16,7 @@ $(function() {
 
     darkmode();
 
-    lightmode = localStorage.getItem('mode');
+    var lightmode = localStorage.getItem('mode');
 
     $("#darkmode").click(function() {
         localStorage.setItem('mode', (localStorage.getItem('mode') || 'dark') === 'dark' ? 'light' : 'dark');
@@ -42,242 +44,43 @@ $(function() {
                 $(this).children(".nav-link.dropdown-toggle.dark").removeClass("dark");
             }
         }
-    })
+    });
 
-    var ign = $("#ign").html().trim();
-    var nameInputObj = {
-        ign: ign
-    };
+    const ign = $("#ign").html().trim();
 
     document.title = ign + " | Hypixel Questing Tool";
 
     $.get("https://api.hypixel.net/resources/quests", function (response) {
 
-        questsInfo = response.quests;
+        var questsInfo = response.quests;
 
-        $.post("get_data.php", JSON.stringify(nameInputObj), function(response) {
+        $.post("get_data.php", JSON.stringify({ign: ign}), function(response) {
 
-            var quests = JSON.parse(response)[0];
+            const resp = JSON.parse(response);
+            const quests = resp.quests;
 
-            var uuidNameObj = {
-                uuid: JSON.parse(response)[12],
-                ign: JSON.parse(response)[6]
-            };
+            $.post("getNames.php", JSON.stringify({uuid: resp.uuid, ign: resp.displayname}), function(names) {
 
-            $.post("getNames.php", JSON.stringify(uuidNameObj), function(names) {
-                var namesParsed = JSON.parse(names);
+                const namesParsed = JSON.parse(names);
                 var namesString = namesParsed[0];
-                for (var i=1; i<namesParsed.length;i++) {
+                for (let i=1; i<namesParsed.length; i++) {
                     namesString += ", " + namesParsed[i];
                 }
                 $("#heading").attr('data-original-title', namesString);
             });
 
             // Info box below name
-            numQuestsCompleted = infoBox(quests, response);
+            var numQuestsCompleted = infoBox(quests, response);
             function infoBox(quests, response) {
 
-                var rank = JSON.parse(response)[4];
-                var rankColour = JSON.parse(response)[5];
+                const rankString = getDisplayName(resp.packageRank, resp.newPackageRank, resp.rankPlusColor, resp.displayname, resp.monthlyRankColor, resp.rank, resp.monthlyPackageRank);
 
-                $("#heading").html(formatRank(JSON.parse(response)[4], JSON.parse(response)[5], JSON.parse(response)[6], JSON.parse(response)[7], JSON.parse(response)[8], JSON.parse(response)[9], JSON.parse(response)[10]));
-                function formatRank(rank, rankColour, name, monthlyPackageRank, oldRank, rankNameColour, staffRank) {
-                    if (staffRank == "HELPER") {
-                        if (lightmode === "dark") {
-                            prefix = "<span style='text-shadow: 1px 1px #858585; color:#5555FF'>[HELPER] " + name + "</span>"
-                        } else {
-                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#5555FF'>[HELPER] " + name + "</span>"
-                        }
-                    } else if (staffRank == "MODERATOR") {
-                        if (lightmode === "dark") {
-                            prefix = "<span style='text-shadow: 1px 1px #414141; color:#008000'>[MOD] " + name + "</span>"
-                        } else {
-                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#008000'>[MOD] " + name + "</span>"
-                        }
-                    } else if (staffRank == "ADMIN") {
-                        if (lightmode === "dark") {
-                            prefix = "<span style='text-shadow: 1px 1px #3f3f3f; color:#FF5555'>[ADMIN] " + name + "</span>"
-                        } else {
-                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#FF5555'>[ADMIN] " + name + "</span>"
-                        }
-                    } else if (staffRank == "YOUTUBER") {
-                        if (lightmode === "dark") {
-                            prefix = "<span style='text-shadow: 1px 1px #373737; color:#FF5555'>[</span><span style='text-shadow: 1px 1px #373737; color:#FFFFFF'>YOUTUBE</span><span style='text-shadow: 1px 1px #373737; color:#FF5555'>] " + name + "</span>"
-                        } else {
-                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#FF5555'>[</span><span style='text-shadow: 1px 1px #eee; color:#FFFFFF'>YOUTUBE</span><span style='text-shadow: 1px 1px #eee; color:#FF5555'>] " + name + "</span>"
-                        }
-                    } else {
-                        if (rank) {
-                            switch (rank) {
-                                case "MVP_PLUS":
-
-                                    var colour = "";
-                                    var prefix = "";
-
-                                    if (monthlyPackageRank == "SUPERSTAR") {
-
-                                        colour = getRankColour(rankColour);
-
-                                        if (rankNameColour == "AQUA") {
-                                            if (lightmode === "dark") {
-                                                prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>] " + name + "</span>";
-                                            } else {
-                                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>] " + name + "</span>";
-                                            }
-
-                                        } else {
-                                            if (lightmode === "dark") {
-                                                prefix = "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #444; color:#FFAA00'>] " + name + "</span>";
-                                            } else {
-                                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>] " + name + "</span>";
-                                            }
-                                        }
-
-                                    } else {
-
-                                        colour = getRankColour(rankColour);
-
-                                        if (lightmode === "dark") {
-                                            prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>+<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>] " + name + "</span>";
-                                        } else {
-                                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>+<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>] " + name + "</span>";
-                                        }
-                                    }
-                                    break;
-                                case "MVP":
-                                    if (lightmode === "dark") {
-                                        prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP] " + name + "</span>";
-                                    } else {
-                                        prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP] " + name + "</span>";
-                                    }
-                                    break;
-                                case "VIP_PLUS":
-                                    if (lightmode === "dark") {
-                                        prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE63C'>[VIP" + "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>+<span style='text-shadow: 1px 1px #444; color:#3CE63C'>] " + name + "</span>";
-                                    } else {
-                                        prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE63C'>[VIP" + "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>+<span style='text-shadow: 1px 1px #eee; color:#3CE63C'>] " + name + "</span>";
-                                    }
-                                    break;
-                                case "VIP":
-                                    if (lightmode === "dark") {
-                                        prefix = "<p style='text-shadow: 1px 1px #444; color:#3CE63C'>[VIP] " + name;
-                                    } else {
-                                        prefix = "<p style='text-shadow: 1px 1px #eee; color:#3CE63C'>[VIP] " + name;
-                                    }
-                                    break
-                            }
-                        } else if (oldRank) {
-                            switch (oldRank) {
-                                case "MVP_PLUS":
-
-                                    var colour = "";
-                                    var prefix = "";
-
-                                    if (monthlyPackageRank == "SUPERSTAR") {
-
-                                        switch (rankColour) {
-                                            case "BLACK":
-                                                colour = "000000"
-                                                break;
-                                            case "DARK_GRAY":
-                                                colour = "555555"
-                                                break;
-                                            case "DARK_PURPLE":
-                                                colour = "AA00AA"
-                                                break;
-                                            case "DARK_GREEN":
-                                                colour = "008000"
-                                                break;
-                                            case "DARK_RED":
-                                                colour = "AA0000"
-                                                break;
-                                            case "PINK":
-                                                colour = "FF55FF"
-                                                break;
-                                            case "WHITE":
-                                                colour = "FFFFFF"
-                                                break;
-                                            case "BLUE":
-                                                colour = "5555FF"
-                                                break;
-                                            case "YELLOW":
-                                                colour = "FFFF55"
-                                                break;
-                                            case "GOLD":
-                                                colour = "FFAA00"
-                                                break;
-                                            case "DARK_AQUA":
-                                                colour = "00AAAA"
-                                                break;
-                                            default:
-                                                colour = "FF5555"
-
-                                        }
-                                        if (rankNameColour == "AQUA") {
-                                            if (lightmode === "dark") {
-                                                prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>] " + name + "</span>";
-                                            } else {
-                                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>] " + name + "</span>";
-                                            }
-
-                                        } else {
-                                            if (lightmode === "dark") {
-                                                prefix = "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #444; color:#FFAA00'>] " + name + "</span>";
-                                            } else {
-                                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>++<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>] " + name + "</span>";
-                                            }
-                                        }
-                                    } else {
-
-                                        colour = getRankColour(rankColour);
-
-                                        if (lightmode === "dark") {
-                                            prefix = "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #444; color:#" + colour + "'>+<span style='text-shadow: 1px 1px #444; color:#FFAA00'>] " + name + "</span>";
-                                        } else {
-                                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>[MVP" + "<span style='text-shadow: 1px 1px #eee; color:#" + colour + "'>+<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>] " + name + "</span>";
-                                        }
-
-                                    }
-                                    break;
-                                    case "MVP":
-                                        if (lightmode === "dark") {
-                                            prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE6E6'>[MVP] " + name + "</span>";
-                                        } else {
-                                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE6E6'>[MVP] " + name + "</span>";
-                                        }
-                                        break;
-                                    case "VIP_PLUS":
-                                        if (lightmode === "dark") {
-                                            prefix = "<span style='text-shadow: 1px 1px #444; color:#3CE63C'>[VIP" + "<span style='text-shadow: 1px 1px #444; color:#FFAA00'>+<span style='text-shadow: 1px 1px #444; color:#3CE63C'>] " + name + "</span>";
-                                        } else {
-                                            prefix = "<span style='text-shadow: 1px 1px #eee; color:#3CE63C'>[VIP" + "<span style='text-shadow: 1px 1px #eee; color:#FFAA00'>+<span style='text-shadow: 1px 1px #eee; color:#3CE63C'>] " + name + "</span>";
-                                        }
-                                        break;
-                                    case "VIP":
-                                        if (lightmode === "dark") {
-                                            prefix = "<p style='text-shadow: 1px 1px #444; color:#3CE63C'>[VIP] " + name;
-                                        } else {
-                                            prefix = "<p style='text-shadow: 1px 1px #eee; color:#3CE63C'>[VIP] " + name;
-                                        }
-                                        break
-                            }
-                        } else if (rank == "NONE" || oldRank == "NONE" || (!oldRank && !rank)) {
-                            if (lightmode === "dark") {
-                                prefix = "<span style='text-shadow: 1px 1px #444; color:#AAAAAA'>" + name + "</span>"
-                            } else {
-                                prefix = "<span style='text-shadow: 1px 1px #eee; color:#AAAAAA'>" + name + "</span>"
-                            }
-                        }
-
-                    }
-
-                    return prefix
-                }
+                $("#heading").html(colourParser(rankString));
 
                 // print quests
                 numQuestsCompleted = printNumQuests(quests);
                 printLevel(response);
-                printAchievements(JSON.parse(response)[11]);
+                printAchievements(resp.achievementPoints);
 
                 function printNumQuests(quests) {
 
@@ -297,8 +100,7 @@ $(function() {
                     updateLeaderboard(numQuestsCompleted, ign);
 
                     function updateLeaderboard(numQuestsCompleted, ign) {
-                        ignQuestsObj = {"ign": ign, "quests": [["all", numQuestsCompleted]], "uuid": JSON.parse(response)[12]}
-                        $.post("updateLeaderboard.php", JSON.stringify(ignQuestsObj));
+                        $.post("updateLeaderboard.php", JSON.stringify({"ign": ign, "quests": [["all", numQuestsCompleted]], "uuid": resp.uuid}));
                     }
 
                     var card="";
@@ -319,8 +121,8 @@ $(function() {
                 } // Loops through all quests and totals them - returns num of quests
 
                 function printLevel(response) {
-                    var exp = JSON.parse(response)[1];
-                    var newExp = JSON.parse(response)[2];
+                    var exp = resp.networkExp;
+                    var newExp = resp.networkLevel;
 
                     var card = "";
                     if (lightmode === 'dark') {
@@ -372,10 +174,10 @@ $(function() {
             var questList = questTabs(questsInfo, quests);
             function questTabs(questsInfo, questsAPI) {
 
-                totalQuestsPossible = 0;
-                questsDoneToday = 0;
-                expEarntToday = 0;
-                weeklyDoneToday = 0;
+                var totalQuestsPossible = 0;
+                var questsDoneToday = 0;
+                var expEarntToday = 0;
+                var weeklyDoneToday = 0;
 
                 //Put most info in object for each quest
                 var questVars = constructQuestArray(questsAPI);
@@ -458,8 +260,8 @@ $(function() {
                                 dailyCard += "            <div class='card-header justify-content-between d-flex' role='tab' id='heading-" + game + "-" + key + "-QUEST" + "'>";
                                 dailyCard += "                <h5 class='mb-0'>";
                                 dailyCard += "                    <a data-toggle='collapse' data-parent='#accordion-" + game + "-daily' href='#collapse-" + game + "-" + key + "-QUEST" + "' aria-expanded='false' aria-controls='collapse-" + game + "-" + key + "-QUEST" + "' class='collapsed'>";
-                                property = questINFO.id;
-                                questName = questINFO.name.match(/: ([a-zA-Z !(),0-9]*)/m);
+                                var property = questINFO.id;
+                                var questName = questINFO.name.match(/: ([a-zA-Z !(),0-9]*)/m);
                                 dailyCard += questName[1];
                                 dailyCard += "                    </a>";
                                 dailyCard += "                </h5>";
@@ -496,10 +298,10 @@ $(function() {
                                         description = questINFO.description;
                                     }
 
-                                    if (objectiveData.type == "IntegerObjective") {
-                                        goal = objectiveData.integer
+                                    if (objectiveData.type === "IntegerObjective") {
+                                        var goal = objectiveData.integer;
                                     } else {
-                                        goal = 1;
+                                        var goal = 1;
                                     }
 
                                     // opening li tag
@@ -537,7 +339,7 @@ $(function() {
                                                 // if started both objectives
                                                 if (numMyObjectives === numAPIObjectives) {
 
-                                                    if (goal == questsAPI[property].active[objectiveData.id]) {
+                                                    if (goal === questsAPI[property].active[objectiveData.id]) {
                                                         dailyCard += description + "<span class='badge badge-pill badge-success'>";
                                                         dailyCard += goal
                                                     } else {
@@ -550,7 +352,6 @@ $(function() {
                                                         dailyCard += questsAPI[property].active[objectiveData.id]
                                                     }
                                                     dailyCard += "/" + goal + "</span>";
-
 
                                                 } else {
 
@@ -589,7 +390,7 @@ $(function() {
                                     weeklyCard += "        <div class='card'>";
                                 }
                                 property = questINFO.id;
-                                questIDNAME = property;
+                                var questIDNAME = property;
                                 weeklyCard += "        <div id='progress-header-" + questIDNAME + "'>";
                                 weeklyCard += "            <div class='card-header justify-content-between d-flex' role='tab' id='heading-" + game + "-" + key + "-WEEKLY-QUEST" + "'>";
                                 weeklyCard += "                <h5 class='mb-0'>";
@@ -619,10 +420,10 @@ $(function() {
 
                                     objectiveCounter++;
 
-                                    if (objectiveData.type == "IntegerObjective") {
-                                        goal = objectiveData.integer
+                                    if (objectiveData.type === "IntegerObjective") {
+                                        var goal = objectiveData.integer;
                                     } else {
-                                        goal = 1;
+                                        var goal = 1;
                                     }
 
                                     // opening li tag
@@ -653,7 +454,7 @@ $(function() {
                                             if (numMyObjectives === numAPIObjectives) {
 
                                                 // if completed
-                                                if (goal == questsAPI[property].active[objectiveData.id]) {
+                                                if (goal === questsAPI[property].active[objectiveData.id]) {
                                                     weeklyCard += description + "<span class='badge badge-pill badge-success'>";
                                                     weeklyCard += goal;
                                                     percentage += 1;
@@ -824,13 +625,13 @@ $(function() {
 
                 var weeklyText = "";
 
-                if (weeklyDoneToday == 1) {
+                if (weeklyDoneToday === 1) {
                     weeklyText = " (including " + 1 + " weekly quest)";
                 } else if (weeklyDoneToday > 1) {
                     weeklyText = " (including " + weeklyDoneToday + " weekly quests)";
                 }
 
-                var alert = "<div style='text-align: center; border;' class='alert' style='background-color: #fffff;' role='alert'>You have done <span class='badge badge-pill badge-dark'><b>" + questsDoneToday + "</b> / " + totalQuestsPossible + "</span> daily quests today, that's  <span class='badge badge-pill badge-dark'>" + Math.round((questsDoneToday/totalQuestsPossible)*100) + "%</span>";
+                var alert = "<div style='text-align: center; border;' class='alert' style='background-color: #FFFFFF' role='alert'>You have done <span class='badge badge-pill badge-dark'><b>" + questsDoneToday + "</b> / " + totalQuestsPossible + "</span> daily quests today, that's  <span class='badge badge-pill badge-dark'>" + Math.round((questsDoneToday/totalQuestsPossible)*100) + "%</span>";
                 alert += "<br>Earning a total of <span class='badge badge-pill badge-dark'><b>" + numberWithCommas(expEarntToday) + "</b></span> exp <i>" + weeklyText + "</i></div>";
                 $("#alert-daily").append(alert);
 
@@ -879,7 +680,6 @@ $(function() {
                             });
 
                         }
-
                     }
                 });
 
@@ -909,12 +709,11 @@ $(function() {
             // Leaderboard tab
             overalLeaderboardTab(ign, numQuestsCompleted);
             function overalLeaderboardTab(ign, numQuestsCompleted) {
-                ignObj = {"ign": ign, "game": "all", "uuid": JSON.parse(response)[12], "num": 250};
-                $.post("displayLeaderboard.php", JSON.stringify(ignObj), function (users) {
+                $.post("displayLeaderboard.php", JSON.stringify({"ign": ign, "game": "all", "uuid": resp.uuid, "num": 250}), function (users) {
 
                     users = JSON.parse(users);
 
-                    for (index in users[0]) {
+                    for (var index in users[0]) {
                         var record = "";
 
                         if (users[0][index].ign == ign) {
@@ -957,11 +756,11 @@ $(function() {
             }
 
             // Stats tab
-            var expEarntMonth = 0
-            statsTab(questList, quests, JSON.parse(response)[3], JSON.parse(response)[12], questsInfo);
+            var expEarntMonth = 0;
+            statsTab(questList, quests, JSON.parse(response)[3], resp.uuid, questsInfo);
             function statsTab(questList, quests, firstLogin, uuid, questsInfo) {
 
-                gameStrings = ["skywars", "arcade", "vampirez", "walls3", "battleground", "quake",
+                var gameStrings = ["skywars", "arcade", "vampirez", "walls3", "battleground", "quake",
                 "walls", "hungergames", "tntgames", "gingerbread", "paintball", "supersmash", "mcgo", "truecombat",
                 "arena", "uhc", "skyclash", "bedwars", "murdermystery", "buildbattle",
                 "duels", "prototype", "speeduhc"];
@@ -996,11 +795,14 @@ $(function() {
 
                     var games = {};
 
+                    var gameIndex;
                     for (gameIndex in gameStrings) {
                         games[gameStrings[gameIndex]] = 0;
                     }
 
+                    var index;
                     for (index in questList) {
+                        var gameIndex;
                         for (gameIndex in gameStrings) {
                             if (questList[index].game == gameStrings[gameIndex]) {
                                 if (questList[index].completions != null) {
@@ -1017,8 +819,7 @@ $(function() {
                         sortable.push([game, games2[game]]);
                     }
 
-                    ignQuestsObj = {"ign": ign, "quests": sortable, "uuid": JSON.parse(response)[12]}
-                    $.post("updateLeaderboard.php", JSON.stringify(ignQuestsObj));
+                    $.post("updateLeaderboard.php", JSON.stringify({"ign": ign, "quests": sortable, "uuid": resp.uuid}));
 
                     sortable.sort(function(a, b) {
                         return a[1] - b[1];
@@ -1030,7 +831,7 @@ $(function() {
                 }
 
                 // Quests/Time
-                questsPerMonth = stats2(quests, firstLogin, uuid, ign)
+                var questsPerMonth = stats2(quests, firstLogin, uuid, ign)
                 function stats2(quests, firstLogin, uuid, ign) {
 
                     var questsPerDay = new Object();
@@ -1282,13 +1083,16 @@ $(function() {
                     var questName = "";
                     var questColour = "";
 
+                    var gameIndex;
                     for (gameIndex in gameStrings) {
                         games.push({"name":getEnGameNames(gameStrings[gameIndex])});
                     }
 
                     // for each quest
+                    var index;
                     for (index in questList) {
                         // for each game
+                        var gameIndex;
                         for (gameIndex in gameStrings) {
                             // if correct game
                             if (questList[index].game == gameStrings[gameIndex]) {
@@ -1368,14 +1172,12 @@ $(function() {
             }
 
             function monthlyOverall(monthQuest, uuid, ign) {
-
-                uuidObj = {"uuid": uuid, "quests": monthQuest, "ign": ign}
-                $.post("updateMonthlyOverallLeaderboard.php", JSON.stringify(uuidObj), function() {
-                    idObj = {"uuid": uuid};
-                    $.post("displayMonthlyOverallLeaderboard.php", JSON.stringify(idObj), function(users) {
+                $.post("updateMonthlyOverallLeaderboard.php", JSON.stringify({"uuid": uuid, "quests": monthQuest, "ign": ign}), function() {
+                    $.post("displayMonthlyOverallLeaderboard.php", JSON.stringify({"uuid": uuid}), function(users) {
 
                         users = JSON.parse(users);
 
+                        var index;
                         for (index in users[0]) {
                             var record = "";
 
@@ -1430,15 +1232,17 @@ $(function() {
                 // if they have done a quest this month
                 if (monthQuest[monthQuest.length-1][0] == thisMonth) {
                     questsThisMonth = monthQuest[monthQuest.length-1][1];
+                    var ignQuestsObj;
                     ignQuestsObj = {"ign": ign, "quests": questsThisMonth};
                 }
 
                 // display monthly leaderboard
-                ignObj = {"ign": ign, "uuid": JSON.parse(response)[12], thisMonth};
-                $.post("displayMonthlyLeaderboard.php", JSON.stringify(ignObj), function(users) {
+                var ignObj;
+                $.post("displayMonthlyLeaderboard.php", JSON.stringify({"ign": ign, "uuid": resp.uuid, thisMonth}), function(users) {
 
                     users = JSON.parse(users);
 
+                    var index;
                     for (index in users[0]) {
                         var record = "";
 
@@ -1490,9 +1294,9 @@ $(function() {
             function yearlyLeaderboardTab(ign, year) {
                 var questsThisYear = 0;
                 // display monthly leaderboard
-                ignObj = {"ign": ign, "year": year};
-                $.post("displayYearlyLeaderboard.php", JSON.stringify(ignObj), function(users) {
+                $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(users) {
                     users = JSON.parse(users);
+                    var index;
                     for (index in users[0]) {
                         var record = "";
 
@@ -1568,8 +1372,10 @@ $(function() {
     $(".games").on("click", function() {
         var game = $(this).attr("id");
         if (game == "all") {
+            var ignObj;
             ignObj = {"ign": ign, "game": game, "num": 250};
         } else {
+            var ignObj;
             ignObj = {"ign": ign, "game": game, "num": 25};
         }
 
@@ -1581,7 +1387,7 @@ $(function() {
             $("#tbody").html("");
             if (users != "") {
                 users = JSON.parse(users);
-                for (index in users[0]) {
+                for (var index in users[0]) {
                     var record = "";
 
                     if (users[0][index].ign == ign) {
@@ -1631,12 +1437,12 @@ $(function() {
     $("#yearly-loading").hide()
     $(".years").on("click", function() {
         var year = $(this).attr("id");
-        ignObj = {"ign": ign, "year": year};
         $("#tbody-yearly").fadeOut(500);
         $("#yearly-loading").fadeIn(100);
-        $.post("displayYearlyLeaderboard.php", JSON.stringify(ignObj), function(users) {
+        $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(users) {
             $("#tbody-yearly").html("");
             users = JSON.parse(users);
+            var index;
             for (index in users[0]) {
                 var record = "";
 
@@ -2436,8 +2242,11 @@ function convertData(data, firstLogin) {
     var day = new Date();
     var endDay = day.getTime();
 
+    var isLastDay;
     isLastDay = startDay == endDay;
+    var dayTick;
     dayTick = 1000 * 60 * 60 * 24;
+    var temp;
     temp = [];
 
     //Create new array with 0 values for each day
@@ -2446,6 +2255,7 @@ function convertData(data, firstLogin) {
         startDay += dayTick;
         temp.push([startDay, 0])
 
+        var isLastDay;
         isLastDay = startDay >= endDay;
     }
 

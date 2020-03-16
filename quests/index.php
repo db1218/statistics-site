@@ -35,7 +35,7 @@
 
         <!-- Local files -->
         <link href="https://notifly.zone/main.css?ver=1.1" rel="stylesheet" type="text/css">
-        <script src="https://notifly.zone/quests/quests.js?ver=1.1" rel="script" type="application/javascript"></script>
+        <script src="./quests.js" type="module"></script>
 
         <!-- Moment -->
         <script src="https://momentjs.com/downloads/moment.js" rel="script" type="application/javascript"></script>
