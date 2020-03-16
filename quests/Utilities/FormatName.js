@@ -20,9 +20,9 @@ export function getDisplayName(preEulaRank, postEulaRank, plusColour, name, plus
                         return "§5";
                     case "GOLD":
                         return "§6";
-                    case "GREY":
+                    case "GRAY":
                         return "§7";
-                    case "DARK_GREY":
+                    case "DARK_GRAY":
                         return "§8";
                     case "BLUE":
                         return "§9";
