@@ -87,8 +87,8 @@
                                 </a>
                             </div>
                             <div class="col">
-                                <a id="quote" tabindex="0" class="btn btn-light" style="width:100%">
-                                    Smile :) <i class="fas fa-cloud-sun fa-lg"></i>
+                                <a id="quote" class="btn btn-light" style="width:100%" href="https://www.nhs.uk/conditions/coronavirus-covid-19/" target="_blank">
+                                    Wash your hands <i class="fas fa-allergies fa-lg"></i>
                                 </a>
                             </div>
                         </div>

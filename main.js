@@ -1,6 +1,6 @@
 $(function() {
 
-    $('[data-toggle="popover"]').popover()
+    $('[data-toggle="popover"]').popover();
     $('[data-toggle="tooltip"]').tooltip();
 
     darkmode();
@@ -87,21 +87,21 @@ $(function() {
         }
     }
 
-    var text = "";
+    // var text = "";
 
-    $("#quote").click(function() {
-        if (text == "") {
-            $('#quote').popover({content: "Loading...", placement: "top", trigger: "focus"});
-            $("#quote").popover('toggle');
-            $.get("https://quotes.rest/qod.json?category=inspire", function(response) {
-                text = response.contents.quotes[0].quote + " -" + response.contents.quotes[0].author;
-                $('#quote').popover("dispose").popover({content: text, placement: "top", trigger: "focus"});
-                $("#quote").popover('toggle');
-            });
-        } else {
-            $('#quote').popover({content: text, placement: "top", trigger: "focus"});
-            $("#quote").popover('toggle');
-        }
-    });
+    // $("#quote").click(function() {
+    //     if (text == "") {
+    //         $('#quote').popover({content: "Loading...", placement: "top", trigger: "focus"});
+    //         $("#quote").popover('toggle');
+    //         $.get("https://quotes.rest/qod.json?category=inspire", function(response) {
+    //             text = response.contents.quotes[0].quote + " -" + response.contents.quotes[0].author;
+    //             $('#quote').popover("dispose").popover({content: text, placement: "top", trigger: "focus"});
+    //             $("#quote").popover('toggle');
+    //         });
+    //     } else {
+    //         $('#quote').popover({content: text, placement: "top", trigger: "focus"});
+    //         $("#quote").popover('toggle');
+    //     }
+    // });
 
 });

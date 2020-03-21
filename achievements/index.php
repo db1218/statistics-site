@@ -35,7 +35,7 @@
 
         <!-- Local files -->
         <link href="../main.css?ver=1.1" rel="stylesheet" type="text/css">
-        <script src="./achievements.js" type="module"></script>
+        <script src="achievements.js" type="module"></script>
 
         <!-- Moment -->
         <script src="https://momentjs.com/downloads/moment.js" rel="script" type="application/javascript"></script>
@@ -53,7 +53,7 @@
         <script src="https://rawgithub.com/highcharts/adapt-chart-to-legend/master/adapt-chart-to-legend.js"></script>
 
         <!-- FullCalendar -->
-        <link href='../fullcalendar/fullcalendar.css?ver=1.1' rel='stylesheet' />
+        <link rel='stylesheet' href='../fullcalendar/fullcalendar.css?ver=1.1' />
         <script src='../fullcalendar/fullcalendar.js?ver=1.1'></script>
 
     </head>

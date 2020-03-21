@@ -205,6 +205,7 @@ $(function() {
                         if (difference.length > 0) {
                             $.post("updates/addNewAchievement.php", JSON.stringify({time:parsedResponse[2],path:difference}));
                         }
+                        console.log(difference.length);
                     }
                     $.post("updates/getNewAchievements.php", function(response3) {
                         var newAchievementList = JSON.parse(response3);
@@ -717,6 +718,7 @@ $(function() {
     $('body').on('click', '.list-group a', function() {
         // removes active class from all other list-groups
         $(this).parent().parent().children().children(".active").removeClass("active");
+        $("#list-overall-list").removeClass("active");
     });
 
     $("body").on("click", "a.game", function() {

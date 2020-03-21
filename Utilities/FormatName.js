@@ -52,10 +52,10 @@ export function getDisplayName(preEulaRank, postEulaRank, plusColour, name, plus
                 case "MVP":
                     return "§b[MVP] ";
                 case "MVP_PLUS":
-                    return getColour(plusplusColour) +
-                        "[MVP" + getColour(plusColour) +
-                        ((monthlyPackageRank == null || monthlyPackageRank === "NONE") ? "+" : "++") +
-                        getColour(plusplusColour) + "] ";
+                    if (monthlyPackageRank == null || monthlyPackageRank === "NONE")
+                        return "§b[MVP" + getColour(plusColour) + "+§b] ";
+                    else
+                        return getColour(plusplusColour) + "[MVP" + getColour(plusColour) + "++" +  getColour(plusplusColour) + "] ";
                 default:
                     return "§7";
             }
@@ -80,7 +80,6 @@ export function getDisplayName(preEulaRank, postEulaRank, plusColour, name, plus
 
         return (staffRank == null || staffRank === "NORMAL") ? getPackageRank() : getSpecialRank();
     }
-
     return getRank() + name;
 }
 

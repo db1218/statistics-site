@@ -12,5 +12,8 @@
     }
     if ($hasChanged == True) {
         file_put_contents("new.json", json_encode($newArray));
+        echo json_encode($newArray);
+    } else {
+        echo json_encode($array);
     }
-    echo json_encode($newArray);
+

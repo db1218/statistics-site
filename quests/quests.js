@@ -59,6 +59,8 @@ $(function() {
             const resp = JSON.parse(response);
             const quests = resp.quests;
 
+            console.log("Hello");
+
             $.post("getNames.php", JSON.stringify({uuid: resp.uuid, ign: resp.displayname}), function(names) {
 
                 const namesParsed = JSON.parse(names);
