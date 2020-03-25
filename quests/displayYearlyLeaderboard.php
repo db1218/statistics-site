@@ -31,7 +31,7 @@
 
             while($row = $result->fetch_assoc()) {
 
-                $user = null;
+                $user = new \stdClass();
                 $counter = $counter + 1;
 
                 $user->ign = $row['ign'];
