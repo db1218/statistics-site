@@ -43,7 +43,7 @@ export function getDisplayName(preEulaRank, postEulaRank, plusColour, name, plus
                 }
             }
 
-            let packageRank = (preEulaRank == null) ? postEulaRank : preEulaRank;
+            let packageRank = (preEulaRank == null || preEulaRank === "NONE") ? postEulaRank : preEulaRank;
             switch (packageRank) {
                 case "VIP":
                     return "§a[VIP] ";
