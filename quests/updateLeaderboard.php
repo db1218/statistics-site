@@ -20,32 +20,35 @@
         $result = $conn->query($sql);
         // for each gamemode
         foreach ($games as $game) {
+            $foundGame = false;
             // if player is already in there
             if ($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()) {
                     // if correct game
                     if ($game[0] == $row["game"]) {
-                        if ($game[1] != $row["quests"]) {
-                            // if quests have changed
-                            $sql = "UPDATE total_quests SET quests='" . $game[1] . "', ign='" . $ign . "' WHERE id='" . $uuid . "' AND game='" . $game[0] . "';";
-                            if ($conn->query($sql) === FALSE) {
-                                echo "Error: " . $sql . "<br>" . $conn->error;
-                            }
-                        } else if ($row["ign"] != $ign) {
+                        $foundGame = true;
+                        if ($row["ign"] != $ign) {
                             // update name
                             $sql = "UPDATE total_quests SET ign='" . $ign . "' WHERE id='" . $uuid . "' AND game='" . $game[0] . "';";
                             if ($conn->query($sql) === FALSE) {
                                 echo "Error: " . $sql . "<br>" . $conn->error;
                             }
                         }
+                        if ($game[1] != $row["quests"]) {
+                            // if quests have changed
+                            $sql = "UPDATE total_quests SET quests='" . $game[1] . "', ign='" . $ign . "' WHERE id='" . $uuid . "' AND game='" . $game[0] . "';";
+                            if ($conn->query($sql) === FALSE) {
+                                echo "Error: " . $sql . "<br>" . $conn->error;
+                            }
+                        }
                     }
                 }
-            } else {
-                if ($game[1] != 0) {
-                    $sql = "INSERT INTO total_quests (id, quests, ign, game) VALUES('" . $uuid . "', '" . $game[1] . "', '" . $ign . "', '" . $game[0] . "');";
-                    if ($conn->query($sql) === FALSE) {
-                        echo "Error: " . $sql . "<br>" . $conn->error;
-                    }
+                $result->data_seek(0);
+            }
+            if (!$foundGame && $game[1] != 0) {
+                $sql = "INSERT INTO total_quests (id, quests, ign, game) VALUES('" . $uuid . "', '" . $game[1] . "', '" . $ign . "', '" . $game[0] . "');";
+                if ($conn->query($sql) === FALSE) {
+                    echo "Error: " . $sql . "<br>" . $conn->error;
                 }
             }
         }
