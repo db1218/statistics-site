@@ -53,8 +53,8 @@
         <script src="https://rawgithub.com/highcharts/adapt-chart-to-legend/master/adapt-chart-to-legend.js"></script>
 
         <!-- FullCalendar -->
-        <link rel='stylesheet' href='../fullcalendar/fullcalendar.css?ver=1.1' />
-        <script src='../fullcalendar/fullcalendar.js?ver=1.1'></script>
+        <link rel='stylesheet' href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.1/dist/fullcalendar.min.css" />
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.1/dist/fullcalendar.min.js"></script>
 
     </head>
 
