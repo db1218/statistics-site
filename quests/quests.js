@@ -1,13 +1,13 @@
-import { getDisplayName, colourParser } from "../Utilities/FormatName.js";
+import {colourParser, getDisplayName} from "../Utilities/FormatName.js";
 
 $(function() {
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    var hash = window.location.hash;
+    const hash = window.location.hash;
     hash && $('ul.nav a[href="' + hash + '"]').tab('show');
 
-    $('.nav-tabs a').click(function (e) {
+    $('.nav-tabs a').click(function () {
        $(this).tab('show');
        var scrollmem = $('body').scrollTop();
        window.location.hash = this.hash;
@@ -26,7 +26,7 @@ $(function() {
     $("#tab-menu .nav-link").on("click", function() {
         if (lightmode === "dark") {
             if ($(this).attr("aria-expanded") != null) {
-                if ($(this).attr("aria-expanded") == "false") {
+                if ($(this).attr("aria-expanded") === "false") {
                     $(".nav-link.dropdown-toggle").addClass('dark');
                 } else {
                     $(".nav-link.dropdown-toggle").removeClass('dark');
@@ -59,8 +59,6 @@ $(function() {
             const resp = JSON.parse(response);
             const quests = resp.quests;
 
-            console.log("Hello");
-
             $.post("getNames.php", JSON.stringify({uuid: resp.uuid, ign: resp.displayname}), function(names) {
 
                 const namesParsed = JSON.parse(names);
@@ -80,8 +78,7 @@ $(function() {
                 $("#heading").html(colourParser(rankString));
 
                 // print quests
-                numQuestsCompleted = printNumQuests(quests);
-                printLevel(response);
+                printLevel();
                 printAchievements(resp.achievementPoints);
 
                 function printNumQuests(quests) {
@@ -106,11 +103,7 @@ $(function() {
                     }
 
                     var card="";
-                    if (lightmode === 'dark') {
-                        card += "<div class='card border-default mb-3 dark'>";
-                    } else {
-                        card += "<div class='card border-default mb-3'>";
-                    }
+                    card += `<div class='card border-default mb-3 ${lightmode === "dark" ? "dark" : ""}'>`;
                     card += "	<div id='info' class='card-body row text-center'>";
                     card += "		<div class='col-sm'>Quests Completed <span class='badge badge-pill badge-secondary'>" + numQuestsCompleted + "</span></div>";
                     card += "	</div>";
@@ -122,23 +115,15 @@ $(function() {
 
                 } // Loops through all quests and totals them - returns num of quests
 
-                function printLevel(response) {
+                function printLevel() {
                     var exp = resp.networkExp;
                     var newExp = resp.networkLevel;
 
                     var card = "";
-                    if (lightmode === 'dark') {
-                        card += "<div class='card border-default mb-3 dark'>";
-                    } else {
-                        card += "<div class='card border-default mb-3'>";
-                    }
+                    card += `<div class='card border-default mb-3 ${lightmode === "dark" ? "dark" : ""}'>`;
                     card += "	<div id='info' class='card-body'>";
                     card += "		<p>Progress to next level</p>";
-                    if (lightmode === "dark") {
-                        card += "		<div class='progress dark'>";
-                    } else {
-                        card += "		<div class='progress'>";
-                    }
+                    card += `		<div class='progress ${lightmode === "dark" ? "dark" : ""}'>`;
                     var percentage = getPercentageToNextLevel(exp, newExp);
                     var colour = getPercentageColour(percentage);
                     if (percentage*100 >= 20) {
@@ -152,23 +137,19 @@ $(function() {
 
                     $("#gen").append(card);
 
-                    var level = "<div class='col-sm'>Network Level <span class='badge badge-pill badge-secondary'>" + getNetworkLevel(exp, newExp) + "</span></div>";
+                    var level = `<div class='col-sm'>Network Level <span class='badge badge-pill badge-secondary'>${getNetworkLevel(exp, newExp)}</span></div>`;
                     $("#info").append(level);
 
                 }
 
                 function printAchievements(achievementPoints) {
                     if (achievementPoints != null) {
-                        if (lightmode === "dark") {
-                            var level = "<div class='col-sm'><a href='/achievements/" + ign + "' style='color:#c1c1c1;'><u class='dark'>Achievement Points</u> <span class='badge badge-pill badge-secondary'>" + achievementPoints + "</a></span></div>";
-                        } else {
-                            var level = "<div class='col-sm'><a href='/achievements/" + ign + "' style='color:#212529;'><u>Achievement Points</u> <span class='badge badge-pill badge-secondary'>" + achievementPoints + "</a></span></div>";
-                        }
+                        var level = `<div class='col-sm'><a href='/achievements/" + ign + "' style='color:#c1c1c1;'><u class='${lightmode === "dark" ? "dark" : ""}'>Achievement Points</u> <span class='badge badge-pill badge-secondary'>" + achievementPoints + "</a></span></div>`;
                         $("#info").append(level);
                     }
                 }
 
-                return numQuestsCompleted;
+                return printNumQuests(quests);
 
             }
 
@@ -197,7 +178,7 @@ $(function() {
 
                         $.each(questsInfo, function(key, quests) {
                             $.each(quests, function(key1, quest) {
-                                if (quest.id == keyID) {
+                                if (quest.id === keyID) {
                                     questsGameObject.name = quest.name;
                                     questsGameObject.colour = getColour(questsGameObject.game);
                                 }
@@ -221,14 +202,14 @@ $(function() {
                     return [questsObj, questsList];
                 }
 
-                populate(questsInfo, questVars[0], questVars[1]);
+                populate(questsInfo, questVars[0]);
 
-                function populate(questsInfo, questsAPI, questsList) {
+                function populate(questsInfo, questsAPI) {
 
                     //for each game
                     $.each(questsInfo, function(game, quests) {
                         //key = game, value = list of quests for game
-                        if (game != "skyclash" && game != "speeduhc") {
+                        if (game !== "skyclash" && game !== "speeduhc") {
                             newCard(game, quests, questsAPI);
                         }
                     });
@@ -236,17 +217,12 @@ $(function() {
                     // Game card
                     function newCard(game, questsInfo, questsAPI) {
 
-                        var card = "";
-                        if (lightmode === 'dark') {
-                            card += "<div class='card dark'>";
-                        } else {
-                            card += "<div class='card'>";
-                        }
+                        var card = `<div class='card ${lightmode === "dark" ? "dark" : ""}'>`;
                         card += "    <div class='card-body'>";
-                        card += "        <h4 class='card-title'>" + getEnGameNames(game) + "</h4>";
+                        card += `        <h4 class='card-title'>${getEnGameNames(game)}</h4>`;
 
-                        var dailyCard = card + "<div id='accordion-" + game + "-daily' role='tablist' aria-multiselectable='true'>";
-                        var weeklyCard = card + "<div id='accordion-" + game + "-weekly' role='tablist' aria-multiselectable='true'>";
+                        var dailyCard = `${card}<div id='accordion-${game}-daily' role='tablist' aria-multiselectable='true'>`;
+                        var weeklyCard = `${card}<div id='accordion-${game}-weekly' role='tablist' aria-multiselectable='true'>`;
 
                         // For each quest in game
                         $.each(questsInfo, function(key, questINFO) {
@@ -254,45 +230,41 @@ $(function() {
                             // Seperates daily and weekly quests
                             if (questINFO.name.includes("Daily") || questINFO.name.includes("Mythic")) {
                                 totalQuestsPossible += 1;
-                                if (lightmode === 'dark') {
-                                    dailyCard += "        <div class='card dark1'>";
-                                } else {
-                                    dailyCard += "        <div class='card'>";
-                                }
-                                dailyCard += "            <div class='card-header justify-content-between d-flex' role='tab' id='heading-" + game + "-" + key + "-QUEST" + "'>";
+                                dailyCard += `        <div class='card ${lightmode === "dark" ? "dark1" : ""}'>`;
+                                dailyCard += `            <div class='card-header justify-content-between d-flex' role='tab' id='heading-${game}-${key}-QUEST'>`;
                                 dailyCard += "                <h5 class='mb-0'>";
-                                dailyCard += "                    <a data-toggle='collapse' data-parent='#accordion-" + game + "-daily' href='#collapse-" + game + "-" + key + "-QUEST" + "' aria-expanded='false' aria-controls='collapse-" + game + "-" + key + "-QUEST" + "' class='collapsed'>";
+                                dailyCard += `                    <a data-toggle='collapse' data-parent='#accordion-${game}-daily' href='#collapse-${game}-${key}-QUEST' aria-expanded='false' aria-controls='collapse-${game}-${key}-QUEST' class='collapsed'>`;
                                 var property = questINFO.id;
                                 var questName = questINFO.name.match(/: ([a-zA-Z !(),0-9]*)/m);
                                 dailyCard += questName[1];
                                 dailyCard += "                    </a>";
                                 dailyCard += "                </h5>";
                                 if ($(questsAPI[property]).length && !jQuery.isEmptyObject(questsAPI[property].latest)) {
-                                    if (doneToday(questsAPI[property].latest.time) == "Not done") {
+                                    if (doneToday(questsAPI[property].latest.time) === "Not done") {
                                         if (jQuery.isEmptyObject(questsAPI[property].active)) {
                                             //Quest not started
-                                            dailyCard += "    <span id='" + game + "-" + key + "-danger' class='badge badge-danger badge-pill'><i class='fa fa-times' aria-hidden='true'></i></span>";
+                                            dailyCard += `    <span id='${game}-${key}-danger' class='badge badge-danger badge-pill'><i class='fa fa-times' aria-hidden='true'></i></span>`;
                                         } else {
                                             // quest started
-                                            dailyCard += "    <span id='" + game + "-" + key + "-warning' class='badge badge-warning badge-pill'><i class='fa fa-minus' aria-hidden='true'></i></span>";
+                                            dailyCard += `    <span id='${game}-${key}-warning' class='badge badge-warning badge-pill'><i class='fa fa-minus' aria-hidden='true'></i></span>`;
                                         }
                                     } else {
                                         // if quest is fully completed
-                                        dailyCard += "        <span id='" + game + "-" + key + "-success' class='badge badge-success badge-pill'><i class='fa fa-check' aria-hidden='true'></i></span>";
+                                        dailyCard += `        <span id='${game}-${key}-success' class='badge badge-success badge-pill'><i class='fa fa-check' aria-hidden='true'></i></span>`;
                                         expEarntToday += questINFO.rewards[0].amount;
                                         questsDoneToday += 1;
                                     }
                                 } else {
-                                    dailyCard +="             <span id='" + game + "-" + key + "-danger' class='badge badge-danger badge-pill'><i class='fa fa-times' aria-hidden='true'></i></span>";
+                                    dailyCard +=`             <span id='${game}-${key}-danger' class='badge badge-danger badge-pill'><i class='fa fa-times' aria-hidden='true'></i></span>`;
                                 }
                                 dailyCard += "            </div>";
-                                dailyCard += "            <div id='collapse-" + game + "-" + key + "-QUEST" + "' class='collapse' role='tabpanel' aria-labelledby='heading-" + game + "-" + key + "-QUEST" + "' aria-expanded='false' style=''>";
+                                dailyCard += `            <div id='collapse-${game}-${key}-QUEST' class='collapse' role='tabpanel' aria-labelledby='heading-${game}-${key}-QUEST' aria-expanded='false' style=''>`;
                                 dailyCard += "                <div class='card-block'>";
 
                                 // For each objective in objectives
                                 $.each(questINFO.objectives, function(objectiveKey, objectiveData) {
 
-                                    var description = "";
+                                    var description;
 
                                     if (questINFO.description.includes("\n") && (questINFO.objectives.length > 1)) {
                                         description = questINFO.description.split("\n")[objectiveKey];
@@ -300,18 +272,10 @@ $(function() {
                                         description = questINFO.description;
                                     }
 
-                                    if (objectiveData.type === "IntegerObjective") {
-                                        var goal = objectiveData.integer;
-                                    } else {
-                                        var goal = 1;
-                                    }
+                                    var goal = objectiveData.type === "IntegerObjective" ? objectiveData.integer : 1;
 
                                     // opening li tag
-                                    if (lightmode === "dark") {
-                                        dailyCard += "            <li class='list-group-item d-flex justify-content-between align-items-center info dark'>";
-                                    } else {
-                                        dailyCard += "            <li class='list-group-item d-flex justify-content-between align-items-center info'>";
-                                    }
+                                    dailyCard += `            <li class='list-group-item d-flex justify-content-between align-items-center info ${lightmode === "dark" ? "dark" : ""}'>`;
 
                                     // if done quest before
                                     if ($(questsAPI[property]).length && !jQuery.isEmptyObject(questsAPI[property].latest)) {
@@ -322,7 +286,6 @@ $(function() {
                                         // if quest not done
                                         if (doneToday(latest) === "Not done") {
                                             if (jQuery.isEmptyObject(questsAPI[property].active)) {
-
                                                 // print quest not started
                                                 dailyCard += description + "<span class='badge badge-pill badge-danger'>0/" + goal + "</span>";
                                             } else {
@@ -342,41 +305,36 @@ $(function() {
                                                 if (numMyObjectives === numAPIObjectives) {
 
                                                     if (goal === questsAPI[property].active[objectiveData.id]) {
-                                                        dailyCard += description + "<span class='badge badge-pill badge-success'>";
+                                                        dailyCard += `${description}<span class='badge badge-pill badge-success'>`;
                                                         dailyCard += goal
                                                     } else {
-                                                        if (lightmode === "dark") {
-                                                            dailyCard += description + "<span class='badge badge-pill badge-warning dark'>";
-                                                        } else {
-                                                            dailyCard += description + "<span class='badge badge-pill badge-warning'>";
-                                                        }
-
+                                                        dailyCard += `${description}<span class='badge badge-pill badge-warning ${lightmode === "dark" ? "dark" : ""}'>`;
                                                         dailyCard += questsAPI[property].active[objectiveData.id]
                                                     }
-                                                    dailyCard += "/" + goal + "</span>";
+                                                    dailyCard += `/${goal}</span>`;
 
                                                 } else {
 
-                                                    if (objectiveID == objectiveData.id) {
-                                                        dailyCard += description + "<span class='badge badge-pill badge-success'>";
+                                                    if (objectiveID === objectiveData.id) {
+                                                        dailyCard += `${description}<span class='badge badge-pill badge-success'>`;
                                                         dailyCard += goal;
-                                                        dailyCard += "/" + goal + "</span>";
+                                                        dailyCard += `/${goal}</span>`;
                                                     } else {
-                                                        dailyCard += description + "<span class='badge badge-pill badge-danger'>";
+                                                        dailyCard += `${description}<span class='badge badge-pill badge-danger'>`;
                                                         dailyCard += 0;
-                                                        dailyCard += "/" + goal + "</span>";
+                                                        dailyCard += `/${goal}</span>`;
                                                     }
 
                                                 }
                                             }
                                         } else {
                                             //Quest done
-                                            dailyCard += description + "<span class='badge badge-pill badge-success' id=''>" + goal + "/" + goal + "</span>";
+                                            dailyCard += `${description}<span class='badge badge-pill badge-success' id=''>${goal}/${goal}</span>`;
 
                                         }
                                     } else {
                                         // quest not done
-                                        dailyCard += description + "<span class='badge badge-pill badge-danger' id=''>0/" + goal + "</span>";
+                                        dailyCard += `${description}<span class='badge badge-pill badge-danger' id=''>0/${goal}</span>`;
                                     }
 
                                     dailyCard += "                </li>";
@@ -386,24 +344,19 @@ $(function() {
                                 dailyCard += "            </div>";
                                 dailyCard += "        </div>";
                             } else if (questINFO.name.includes("Weekly") || questINFO.name.startsWith("Special")) {
-                                if (lightmode === 'dark') {
-                                    weeklyCard += "        <div class='card dark1'>";
-                                } else {
-                                    weeklyCard += "        <div class='card'>";
-                                }
-                                property = questINFO.id;
-                                var questIDNAME = property;
-                                weeklyCard += "        <div id='progress-header-" + questIDNAME + "'>";
-                                weeklyCard += "            <div class='card-header justify-content-between d-flex' role='tab' id='heading-" + game + "-" + key + "-WEEKLY-QUEST" + "'>";
+                                weeklyCard += `        <div class='card ${lightmode === "dark" ? "dark1" : ""}'>`;
+                                var property = questINFO.id;
+                                weeklyCard += `        <div id='progress-header-${property}'>`;
+                                weeklyCard += `            <div class='card-header justify-content-between d-flex' role='tab' id='heading-${game}-${key}-WEEKLY-QUEST'>`;
                                 weeklyCard += "                <h5 class='mb-0'>";
-                                weeklyCard += "                    <a data-toggle='collapse' data-parent='#accordion-" + game + "-weekly' href='#collapse-" + game + "-" + key + "-WEEKLY-QUEST" + "' aria-expanded='false' aria-controls='collapse-" + game + "-" + key + "-WEEKLY-QUEST" + "' class='collapsed'>";
-                                questName = questINFO.name.match(/: ([a-zA-Z !(),0-9]*)/m);
+                                weeklyCard += `                    <a data-toggle='collapse' data-parent='#accordion-${game}-weekly' href='#collapse-${game}-${key}-WEEKLY-QUEST' aria-expanded='false' aria-controls='collapse-${game}-${key}-WEEKLY-QUEST' class='collapsed'>`;
+                                var questName = questINFO.name.match(/: ([a-zA-Z !(),0-9]*)/m);
                                 weeklyCard += questName[1];
                                 weeklyCard += "                    </a>";
                                 weeklyCard += "                </h5>";
                                 weeklyCard += "            </div>";
                                 weeklyCard += "        </div>";
-                                weeklyCard += "       <div id='collapse-" + game + "-" + key + "-WEEKLY-QUEST" + "'  class='collapse' role='tabpanel' aria-labelledby='heading-" + game + "-" + key + "-WEEKLY-QUEST" + "' aria-expanded='false'>";
+                                weeklyCard += `       <div id='collapse-${game}-${key}-WEEKLY-QUEST'  class='collapse' role='tabpanel' aria-labelledby='heading-${game}-${key}-WEEKLY-QUEST' aria-expanded='false'>`;
                                 weeklyCard += "           <div class='card-block'>";
 
                                 var percentage = 0;
@@ -422,18 +375,10 @@ $(function() {
 
                                     objectiveCounter++;
 
-                                    if (objectiveData.type === "IntegerObjective") {
-                                        var goal = objectiveData.integer;
-                                    } else {
-                                        var goal = 1;
-                                    }
+                                    const goal = (objectiveData.type === "IntegerObjective") ? objectiveData.integer : 1;
 
                                     // opening li tag
-                                    if (lightmode == "dark") {
-                                        weeklyCard += "       <li class='list-group-item d-flex justify-content-between align-items-center info dark'>";
-                                    } else {
-                                        weeklyCard += "       <li class='list-group-item d-flex justify-content-between align-items-center info'>";
-                                    }
+                                    weeklyCard += `       <li class='list-group-item d-flex justify-content-between align-items-center info ${lightmode === "dark" ? "dark" : ""}'>`;
                                     // if done quest before
                                     if ($(questsAPI[property]).length && ((!jQuery.isEmptyObject(questsAPI[property].latest)) || (!jQuery.isEmptyObject(questsAPI[property].active)))) {
 
@@ -457,51 +402,48 @@ $(function() {
 
                                                 // if completed
                                                 if (goal === questsAPI[property].active[objectiveData.id]) {
-                                                    weeklyCard += description + "<span class='badge badge-pill badge-success'>";
+                                                    weeklyCard += `${description}<span class='badge badge-pill badge-success'>`;
                                                     weeklyCard += goal;
                                                     percentage += 1;
                                                 } else {
                                                     // not completed
-                                                    if (lightmode === "dark") {
-                                                        weeklyCard += description + "<span class='badge badge-pill badge-warning dark'>";
-                                                    } else {
-                                                        weeklyCard += description + "<span class='badge badge-pill badge-warning'>";
-                                                    }
+                                                    weeklyCard += `${description}<span class='badge badge-pill badge-warning ${(lightmode === "dark") ? "dark" : ""}'>`;
+
                                                     percentage += (questsAPI[property].active[objectiveData.id]/goal);
                                                     weeklyCard += questsAPI[property].active[objectiveData.id]
                                                 }
-                                                weeklyCard += "/" + goal + "</span>";
+                                                weeklyCard += `/${goal}</span>`;
 
                                             } else {
-                                                if (objectiveID == objectiveData.id) {
-                                                    if (questsAPI[property].active[objectiveData.id] == goal) {
-                                                        weeklyCard += description + "<span class='badge badge-pill badge-success'>";
+                                                if (objectiveID === objectiveData.id) {
+                                                    if (goal === questsAPI[property].active[objectiveData.id]) {
+                                                        weeklyCard += `${description}<span class='badge badge-pill badge-success'>`;
                                                         weeklyCard += goal;
-                                                        weeklyCard += "/" + goal + "</span>";
+                                                        weeklyCard += `/${goal}</span>`;
                                                         percentage += 1;
                                                     } else {
-                                                        weeklyCard += description + "<span class='badge badge-pill badge-warning'>";
+                                                        weeklyCard += `${description}<span class='badge badge-pill badge-warning'>`;
                                                         weeklyCard += questsAPI[property].active[objectiveData.id];
-                                                        weeklyCard += "/" + goal + "</span>";
+                                                        weeklyCard += `/${goal}</span>`;
                                                         percentage += (questsAPI[property].active[objectiveData.id]/goal);
                                                     }
 
                                                 } else {
                                                     if (questsAPI[property].active[objectiveData.id] == null) {
-                                                        weeklyCard += description + "<span class='badge badge-pill badge-danger'>";
+                                                        weeklyCard += `${description}<span class='badge badge-pill badge-danger'>`;
                                                         weeklyCard += 0;
-                                                        weeklyCard += "/" + goal + "</span>";
+                                                        weeklyCard += `/${goal}</span>`;
                                                         percentage += 0;
                                                     } else {
-                                                        if (questsAPI[property].active[objectiveData.id] == goal) {
-                                                            weeklyCard += description + "<span class='badge badge-pill badge-success'>";
+                                                        if (questsAPI[property].active[objectiveData.id] === goal) {
+                                                            weeklyCard += `${description}<span class='badge badge-pill badge-success'>`;
                                                             weeklyCard += goal;
-                                                            weeklyCard += "/" + goal + "</span>";
+                                                            weeklyCard += `/${goal}</span>`;
                                                             percentage += 1;
                                                         } else {
-                                                            weeklyCard += description + "<span class='badge badge-pill badge-warning'>";
+                                                            weeklyCard += `${description}<span class='badge badge-pill badge-warning'>`;
                                                             weeklyCard += questsAPI[property].active[objectiveData.id];
-                                                            weeklyCard += "/" + goal + "</span>";
+                                                            weeklyCard += `/${goal}</span>`;
                                                             percentage += (questsAPI[property].active[objectiveData.id]/goal);
                                                         }
                                                     }
@@ -514,10 +456,10 @@ $(function() {
                                             // latest time completed quest
                                             var latest = questsAPI[property].latest.time;
                                             // if quest not done
-                                            if (doneThisWeek(latest) == "Not done") {
+                                            if (doneThisWeek(latest) === "Not done") {
                                                 if (jQuery.isEmptyObject(questsAPI[property].active)) {
                                                     // print quest not started
-                                                    weeklyCard += description + "<span class='badge badge-pill badge-danger'>0/" + goal + "</span>";
+                                                    weeklyCard += `${description}<span class='badge badge-pill badge-danger'>0/${goal}</span>`;
                                                 } else {
 
                                                     var objectiveID = Object.keys(questsAPI[property].active);
@@ -536,31 +478,27 @@ $(function() {
                                                     if (numMyObjectives === numAPIObjectives) {
 
                                                         // if completed
-                                                        if (goal == questsAPI[property].active[objectiveData.id]) {
-                                                            weeklyCard += description + "<span class='badge badge-pill badge-success'>";
+                                                        if (goal === questsAPI[property].active[objectiveData.id]) {
+                                                            weeklyCard += `${description}<span class='badge badge-pill badge-success'>`;
                                                             weeklyCard += goal;
                                                             percentage += 1;
                                                         } else {
                                                             // not completed
-                                                            if (lightmode === "dark") {
-                                                                weeklyCard += description + "<span class='badge badge-pill badge-warning dark'>";
-                                                            } else {
-                                                                weeklyCard += description + "<span class='badge badge-pill badge-warning'>";
-                                                            }
+                                                            weeklyCard += `${description}<span class='badge badge-pill badge-warning ${lightmode === "dark" ? "dark" : ""}'>`;
                                                             percentage += (questsAPI[property].active[objectiveData.id]/goal);
                                                             weeklyCard += questsAPI[property].active[objectiveData.id]
                                                         }
-                                                        weeklyCard += "/" + goal + "</span>";
+                                                        weeklyCard += `/${goal}</span>`;
 
                                                     } else {
 
-                                                        if (objectiveID == objectiveData.id) {
-                                                            weeklyCard += description + "<span class='badge badge-pill badge-success'>";
+                                                        if (objectiveID === objectiveData.id) {
+                                                            weeklyCard += `${description}<span class='badge badge-pill badge-success'>`;
                                                             weeklyCard += goal;
-                                                            weeklyCard += "/" + goal + "</span>";
+                                                            weeklyCard += `/${goal}</span>`;
                                                             percentage += 1;
                                                         } else {
-                                                            weeklyCard += description + "<span class='badge badge-pill badge-danger'>";
+                                                            weeklyCard += `${description}<span class='badge badge-pill badge-danger'>`;
                                                             weeklyCard += 0;
                                                             weeklyCard += "/" + goal + "</span>";
                                                             percentage += 0;
@@ -571,14 +509,14 @@ $(function() {
                                                 }
                                             } else {
                                                 // quest done
-                                                weeklyCard += description + "<span class='badge badge-pill badge-success' id=''>" + goal + "/" + goal + "</span>";
+                                                weeklyCard += `${description}<span class='badge badge-pill badge-success' id=''>${goal}/${goal}</span>`;
                                                 percentage += 1;
 
                                             }
                                         }
                                     } else {
                                         // quest not done at all
-                                        weeklyCard += description + "<span class='badge badge-pill badge-danger' id=''>0/" + goal + "</span>";
+                                        weeklyCard += `${description}<span class='badge badge-pill badge-danger' id=''>0/${goal}</span>`;
                                         percentage += 0;
                                     }
                                     weeklyCard += "           </li>";
@@ -587,20 +525,16 @@ $(function() {
                                 weeklyCard += "           </div>";
                                 weeklyCard += "       </div>";
                                 weeklyCard += "       <div class='card-body'>";
-                                if (lightmode === "dark") {
-                                    weeklyCard += "		<div class='progress dark2'>";
-                                } else {
-                                    weeklyCard += "		<div class='progress'>";
-                                }
+                                weeklyCard += `		<div class='progress ${lightmode === "dark" ? "dark2" : ""}'>`;
                                 percentage /= objectiveCounter;
-                                if (percentage == 1) {
-                                    weeklyCard += "           <div class='progress-bar progress-bar-striped bg-success' role='progressbar' style='width: " + 100 + "%'></div>";
-                                    if (doneToday(questsAPI[property].latest.time) == "Done") {
+                                if (percentage === 1) {
+                                    weeklyCard += `           <div class='progress-bar progress-bar-striped bg-success' role='progressbar' style='width: 100%'></div>`;
+                                    if (doneToday(questsAPI[property].latest.time) === "Done") {
                                         weeklyDoneToday += 1;
                                         expEarntToday += questINFO.rewards[0].amount;
                                     }
                                 } else {
-                                    weeklyCard += "           <div class='progress-bar progress-bar-striped bg-warning' role='progressbar' style='width: " + percentage*100 + "%'></div>";
+                                    weeklyCard += `           <div class='progress-bar progress-bar-striped bg-warning' role='progressbar' style='width: ${percentage * 100}%'></div>`;
                                 }
                                 weeklyCard += "           </div>";
                                 weeklyCard += "       </div>";
@@ -633,8 +567,8 @@ $(function() {
                     weeklyText = " (including " + weeklyDoneToday + " weekly quests)";
                 }
 
-                var alert = "<div style='text-align: center; border;' class='alert' style='background-color: #FFFFFF' role='alert'>You have done <span class='badge badge-pill badge-dark'><b>" + questsDoneToday + "</b> / " + totalQuestsPossible + "</span> daily quests today, that's  <span class='badge badge-pill badge-dark'>" + Math.round((questsDoneToday/totalQuestsPossible)*100) + "%</span>";
-                alert += "<br>Earning a total of <span class='badge badge-pill badge-dark'><b>" + numberWithCommas(expEarntToday) + "</b></span> exp <i>" + weeklyText + "</i></div>";
+                var alert = `<div style='text-align: center; border;' class='alert' style='background-color: #FFFFFF' role='alert'>You have done <span class='badge badge-pill badge-dark'><b>${questsDoneToday}</b> / ${totalQuestsPossible}</span> daily quests today, that's  <span class='badge badge-pill badge-dark'>${Math.round((questsDoneToday / totalQuestsPossible) * 100)}%</span>`;
+                alert += `<br>Earning a total of <span class='badge badge-pill badge-dark'><b>${numberWithCommas(expEarntToday)}</b></span> exp <i>${weeklyText}</i></div>`;
                 $("#alert-daily").append(alert);
 
                 return questVars[1];
@@ -647,7 +581,7 @@ $(function() {
                 var formattedEventData = [];
                 $.each(quests, function(quest, questData) {
                     if (questData.completions != null) {
-                        for (var i = 0; i < questData.completions.length; i++) {
+                        for (let i = 0; i < questData.completions.length; i++) {
 
                             var offset = moment().format("Z");
                             offset = offset.substring(0, 3);
@@ -659,16 +593,16 @@ $(function() {
                             var questName = "";
 
                             $.each(questList, function(key, value) {
-                                if (value.id == quest) {
+                                if (value.id === quest) {
                                     if (value.name != null) {
                                         questName = value.name.match(/: ([a-zA-Z !(),0-9]*)/m)[1];
                                         colour += value.colour;
-                                        questName += " (" + getEnGameNames(value.game) + ")";
+                                        questName += ` (${getEnGameNames(value.game)})`;
                                     } else {
                                         game = getEnQuestNames(value.id);
                                         colour += getColour(game);
-                                        questName = "(Old) " + game.match(/: ([a-zA-Z !(),0-9]*)/m)[1]; //
-                                        questName += " (" + getEnGameNames(game) + ")";
+                                        questName = `(Old) ${game.match(/: ([a-zA-Z !(),0-9]*)/m)[1]}`; //
+                                        questName += ` (${getEnGameNames(game)})`;
                                     }
 
                                 }
@@ -709,49 +643,49 @@ $(function() {
             $("#footer").fadeIn(500);
 
             // Leaderboard tab
-            overalLeaderboardTab(ign, numQuestsCompleted);
-            function overalLeaderboardTab(ign, numQuestsCompleted) {
+            overalLeaderboardTab(ign);
+            function overalLeaderboardTab(ign) {
                 $.post("displayLeaderboard.php", JSON.stringify({"ign": ign, "game": "all", "uuid": resp.uuid, "num": 250}), function (users) {
 
                     users = JSON.parse(users);
 
-                    for (var index in users[0]) {
+                    for (let index in users[0]) {
                         var record = "";
 
-                        if (users[0][index].ign == ign) {
-                            if (lightmode === "dark") {
-                                record += "<tr class='table-active dark'>";
-                            } else {
-                                record += "<tr class='table-active'>";
-                            }
+                        if (users[0][index].ign === ign) {
+                            record += `<tr class='table-active ${lightmode === "dark" ? "dark" : ""}'>`;
                         } else {
                             record += "<tr>";
                         }
 
-                        if (index == 0) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else if (index == 1) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else if (index == 2) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else {
-                            record += "<th scope='row'>" + parseInt(parseInt(index)+1) + "</th>";
+                        switch (index) {
+                            case "0":
+                                record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                                break;
+                            case "1":
+                                record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                                break;
+                            case "2":
+                                record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                                break;
+                            default:
+                                record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
                         }
 
-                        if (users[0][index].ign == ign) {
-                            record +=    "<td><a href='/quests/" + users[0][index].uuid + "'><b>" + users[0][index].ign + "</b></a></td>";
+                        if (users[0][index].ign === ign) {
+                            record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
                         } else {
-                            record +=    "<td><a href='/quests/" + users[0][index].uuid + "'>" + users[0][index].ign + "</a></td>";
+                            record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
                         }
 
 
-                        record += "<td>" + users[0][index].quests + "</td>" + "</tr>";
+                        record += `<td> ${users[0][index].quests} </td></tr>`;
                         $("#tbody").append(record);
 
                     }
 
-                    var alert = "";
-                    alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#" + users[1] + "</span> with <span class='badge badge-pill badge-dark'>" + users[2] + " quests</span> in <span class='badge badge-pill badge-dark'>All games</span></div>";
+                    var alert;
+                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'># ${users[1]} + </span> with <span class='badge badge-pill badge-dark'> + ${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>All games</span></div>`;
                     $("#alert-overall").append(alert);
 
                 });
@@ -768,7 +702,7 @@ $(function() {
                 "duels", "prototype", "speeduhc"];
 
                 // Quests/Game
-                stats1(questList, gameStrings)
+                stats1(questList, gameStrings);
                 function stats1(questList, gameStrings) {
                     var questsAllGamesChart = Highcharts.chart('questsAllGamesChart', {
                         chart: {
@@ -806,7 +740,7 @@ $(function() {
                     for (index in questList) {
                         var gameIndex;
                         for (gameIndex in gameStrings) {
-                            if (questList[index].game == gameStrings[gameIndex]) {
+                            if (questList[index].game === gameStrings[gameIndex]) {
                                 if (questList[index].completions != null) {
                                     games[gameStrings[gameIndex]] += questList[index].completions
                                 }
@@ -817,7 +751,7 @@ $(function() {
                     var games2 = games;
 
                     var sortable = [];
-                    for (var game in games2) {
+                    for (let game in games2) {
                         sortable.push([game, games2[game]]);
                     }
 
@@ -827,36 +761,36 @@ $(function() {
                         return a[1] - b[1];
                     });
 
-                    for (game in sortable) {
+                    for (let game in sortable) {
                         questsAllGamesChart.series[0].addPoint({name: getEnGameNames(sortable[game][0]), y: sortable[game][1]});
                     }
                 }
 
                 // Quests/Time
-                var questsPerMonth = stats2(quests, firstLogin, uuid, ign)
+                var questsPerMonth = stats2(quests, firstLogin, uuid, ign);
                 function stats2(quests, firstLogin, uuid, ign) {
 
-                    var questsPerDay = new Object();
-                    var questsPerDay2 = new Object();
-                    var questsPerMonth = new Object();
+                    var questsPerDay = {};
+                    var questsPerDay2 = {};
+                    var questsPerMonth = {};
 
                     var monthNow = moment().tz('America/New_York').format('MM');
                     var yearNow = moment().tz('America/New_York').format('YYYY');
-                    var thisMonth = yearNow + "-" + monthNow
+                    var thisMonth = yearNow + "-" + monthNow;
 
                     // add quests to questsPerDay object
                     $.each(quests, function(key, value) {
                         if (value.completions != null) {
-                            for (var i=0; i < value.completions.length; i++) {
+                            for (let i=0; i < value.completions.length; i++) {
 
                                 // for calendar
                                 var date = new Date(value.completions[i].time);
 
-                                var dateString = date.getFullYear() + "-";
+                                var dateString = `${date.getFullYear()}-`;
                                 if ((date.getMonth()+1) < 10) {
-                                    dateString += "0" + (date.getMonth()+1) + "-"
+                                    dateString += `0${date.getMonth() + 1}-`
                                 } else {
-                                    dateString += (date.getMonth()+1) + "-"
+                                    dateString += `${date.getMonth() + 1}-`
                                 }
 
                                 if (date.getDate() < 10) {
@@ -877,10 +811,8 @@ $(function() {
                                 // for record monthly quests
                                 var convertedTime = moment(value.completions[i].time).tz('America/New_York').startOf('day');
 
-                                var fullDateString = convertedTime.format('YYYY') + "-" + convertedTime.format('MM') + "-" + convertedTime.format('DD');
-                                var monthDateString = convertedTime.format('YYYY') + "-" + convertedTime.format('MM');
-
-                                var unix = convertedTime.format('x');
+                                var fullDateString = `${convertedTime.format('YYYY')}-${convertedTime.format('MM')}-${convertedTime.format('DD')}`;
+                                var monthDateString = `${convertedTime.format('YYYY')}-${convertedTime.format('MM')}`;
 
                                 if (fullDateString in questsPerDay) {
                                     questsPerDay[fullDateString] += 1
@@ -889,10 +821,10 @@ $(function() {
                                 }
 
                                 if (monthDateString in questsPerMonth) {
-                                    if (monthDateString == thisMonth) {
+                                    if (monthDateString === thisMonth) {
                                         $.each(questsInfo, function(key2, questINFO) {
-                                            for (var i=0;i<questINFO.length;i++) {
-                                                if (questINFO[i].id == key) {
+                                            for (let i=0; i<questINFO.length; i++) {
+                                                if (questINFO[i].id === key) {
                                                     expEarntMonth += questINFO[i].rewards[0].amount;
                                                 }
                                             }
@@ -900,10 +832,10 @@ $(function() {
                                     }
                                     questsPerMonth[monthDateString] += 1
                                 } else {
-                                    if (monthDateString == thisMonth) {
+                                    if (monthDateString === thisMonth) {
                                         $.each(questsInfo, function(key2, questINFO) {
-                                            for (var i=0;i<questINFO.length;i++) {
-                                                if (questINFO[i].id == key) {
+                                            for (let i=0; i<questINFO.length; i++) {
+                                                if (questINFO[i].id === key) {
                                                     expEarntMonth += questINFO[i].rewards[0].amount;
                                                 }
                                             }
@@ -925,12 +857,8 @@ $(function() {
                     data2 = data2.sort(sortFunctionTime);
 
                     function sortFunctionTime(a, b) {
-                        if (a[0] === b[0]) {
-                            return 0;
-                        }
-                        else {
-                            return (a[0] < b[0]) ? -1 : 1;
-                        }
+                        if (a[0] === b[0]) return 0;
+                        else return (a[0] < b[0]) ? -1 : 1;
                     }
 
                     var data = [];
@@ -939,9 +867,9 @@ $(function() {
                         data.push([parseInt(key), value])
                     });
 
-                    data = convertData(data, firstLogin);
+                    data = convertData(data);
 
-                    var questsAllGamesChart2 = Highcharts.stockChart('questsAllGamesChart2', {
+                    Highcharts.stockChart('questsAllGamesChart2', {
                         chart: {
                             zoomType: 'x'
                         },
@@ -1022,10 +950,10 @@ $(function() {
                 }
 
                 // Quests/Month
-                stats3(questsPerMonth)
+                stats3(questsPerMonth);
                 function stats3(questsPerMonth) {
 
-                    var chart3 = Highcharts.chart('questsAllGamesChart3', {
+                    Highcharts.chart('questsAllGamesChart3', {
                         chart: {
                             type: 'spline'
                         },
@@ -1078,8 +1006,8 @@ $(function() {
                 }
 
                 // Quests/Quest
-                stats4(questList, gameStrings, questsInfo)
-                function stats4(questList, gameStrings, questsInfo) {
+                stats4(questList, gameStrings);
+                function stats4(questList, gameStrings) {
 
                     var games = [];
                     var questName = "";
@@ -1097,7 +1025,7 @@ $(function() {
                         var gameIndex;
                         for (gameIndex in gameStrings) {
                             // if correct game
-                            if (questList[index].game == gameStrings[gameIndex]) {
+                            if (questList[index].game === gameStrings[gameIndex]) {
                                 // if quest has been completed before
                                 if (questList[index].completions != null) {
                                     if (games[gameIndex].data == null) {
@@ -1108,16 +1036,16 @@ $(function() {
                                     questColour = questList[index].colour;
 
                                     if (questList[index].name != null) {
-                                        games[gameIndex].data.push({"name":questName, "value":questList[index].completions, "color":"#"+questColour});
+                                        games[gameIndex].data.push({"name":questName, "value":questList[index].completions, "color":`#${questColour}`});
                                     } else {
-                                        games[gameIndex].data.push({"name":"(Old) "+getEnQuestNames(questList[index].id), "value":questList[index].completions, "color":"#"+getColour(questList[index].game)});
+                                        games[gameIndex].data.push({"name":`(Old) ${getEnQuestNames(questList[index].id)}`, "value":questList[index].completions, "color":`#${getColour(questList[index].game)}`});
                                     }
                                 }
                             }
                         }
                     }
 
-                    var questsAllGamesChart4 = Highcharts.chart('questsAllGamesChart4', {
+                    Highcharts.chart('questsAllGamesChart4', {
                         chart: {
                             type: 'packedbubble',
                             height: "auto"
@@ -1183,40 +1111,40 @@ $(function() {
                         for (index in users[0]) {
                             var record = "";
 
-                            if (users[0][index].ign == ign) {
-                                if (lightmode === "dark") {
-                                    record += "<tr class='table-active dark'>";
-                                } else {
-                                    record += "<tr class='table-active'>";
-                                }
+                            if (users[0][index].ign === ign) {
+                                record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
                             } else {
                                 record += "<tr>";
                             }
 
-                            if (index == 0) {
-                                record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                            } else if (index == 1) {
-                                record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                            } else if (index == 2) {
-                                record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                            } else {
-                                record += "<th scope='row'>" + parseInt(parseInt(index)+1) + "</th>";
+                            switch (index) {
+                                case 0:
+                                    record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
+                                    break;
+                                case 1:
+                                    record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
+                                    break;
+                                case 2:
+                                    record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
+                                    break;
+                                default:
+                                    record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
                             }
 
-                            if (users[0][index].ign == ign) {
-                                record +=    "<td><a href='/quests/" + users[0][index].uuid + "'><b>" + users[0][index].ign + "</b></a></td>";
+                            if (users[0][index].ign === ign) {
+                                record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
                             } else {
-                                record +=    "<td><a href='/quests/" + users[0][index].uuid + "'>" + users[0][index].ign + "</a></td>";
+                                record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
                             }
 
-                            record += "<td>" + users[0][index].quests + "</td>";
-                            record += "<td>" + convertDate(users[0][index].month) + "</td>" + "</tr>";
+                            record += `<td>${users[0][index].quests}</td>`;
+                            record += `<td>${convertDate(users[0][index].month)}</td></tr>`;
                             $("#tbody-monthly-record").append(record);
 
                         }
 
                         var alert = "";
-                        alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#" + users[1] + "</span> with a record of <span class='badge badge-pill badge-dark'>" + users[2] + " quests</span> in the month of <span class='badge badge-pill badge-dark'>" + convertDate(users[3]) + "</span></div>";
+                        alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with a record of <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in the month of <span class='badge badge-pill badge-dark'>${convertDate(users[3])}</span></div>`;
                         $("#alert-monthly-record").append(alert);
 
                     });
@@ -1232,14 +1160,11 @@ $(function() {
                 var questsThisMonth = 0;
 
                 // if they have done a quest this month
-                if (monthQuest[monthQuest.length-1][0] == thisMonth) {
+                if (monthQuest[monthQuest.length-1][0] === thisMonth) {
                     questsThisMonth = monthQuest[monthQuest.length-1][1];
-                    var ignQuestsObj;
-                    ignQuestsObj = {"ign": ign, "quests": questsThisMonth};
                 }
 
                 // display monthly leaderboard
-                var ignObj;
                 $.post("displayMonthlyLeaderboard.php", JSON.stringify({"ign": ign, "uuid": resp.uuid, thisMonth}), function(users) {
 
                     users = JSON.parse(users);
@@ -1248,43 +1173,42 @@ $(function() {
                     for (index in users[0]) {
                         var record = "";
 
-                        if (users[0][index].ign == ign) {
-                            if (lightmode === "dark") {
-                                record += "<tr class='table-active dark'>";
-                            } else {
-                                record += "<tr class='table-active'>";
-                            }
-
+                        if (users[0][index].ign === ign) {
+                            record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
                         } else {
                             record += "<tr>";
                         }
 
-                        if (index == 0) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else if (index == 1) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else if (index == 2) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else {
-                            record += "<th scope='row'>" + parseInt(parseInt(index)+1) + "</th>";
+                        switch (index) {
+                            case 0:
+                                record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
+                                break;
+                            case 1:
+                                record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
+                                break;
+                            case 2:
+                                record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
+                                break;
+                            default:
+                                record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
                         }
 
-                        if (users[0][index].ign == ign) {
-                            record +=    "<td><a href='/quests/" + users[0][index].uuid + "'><b>" + users[0][index].ign + "</b></a></td>";
+                        if (users[0][index].ign === ign) {
+                            record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
                         } else {
-                            record +=    "<td><a href='/quests/" + users[0][index].uuid + "'>" + users[0][index].ign + "</a></td>";
+                            record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
                         }
 
 
-                        record += "<td>" + users[0][index].quests + "</td>" + "</tr>";
+                        record += `<td>${users[0][index].quests}</td></tr>`;
                         $("#tbody-monthly").append(record);
 
                     }
 
                     var alert = "";
                     alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
-                    alert += "   You are currently placed <span class='badge badge-pill badge-dark'>#" + users[1] + "</span> with <span class='badge badge-pill badge-dark'>" + questsThisMonth + " quests</span> this month,";
-                    alert += "   earning a total of <span class='badge badge-pill badge-dark'>" + numberWithCommas(expEarntMonth) + "</span> exp";
+                    alert += `   You are currently placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${questsThisMonth} quests</span> this month,`;
+                    alert += `   earning a total of <span class='badge badge-pill badge-dark'>${numberWithCommas(expEarntMonth)}</span> exp`;
                     alert += "</div>";
                     $("#alert-monthly").append(alert);
 
@@ -1294,7 +1218,6 @@ $(function() {
 
             yearlyLeaderboardTab(ign, "2020");
             function yearlyLeaderboardTab(ign, year) {
-                var questsThisYear = 0;
                 // display monthly leaderboard
                 $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(users) {
                     users = JSON.parse(users);
@@ -1302,43 +1225,43 @@ $(function() {
                     for (index in users[0]) {
                         var record = "";
 
-                        if (users[0][index].ign == ign) {
-                            if (lightmode === "dark") {
-                                record += "<tr class='table-active dark'>";
-                            } else {
-                                record += "<tr class='table-active'>";
-                            }
-
+                        if (users[0][index].ign === ign) {
+                            record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
                         } else {
                             record += "<tr>";
                         }
 
-                        if (index == 0) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else if (index == 1) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else if (index == 2) {
-                            record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                        } else {
-                            record += "<th scope='row'>" + parseInt(parseInt(index)+1) + "</th>";
+                        switch (index) {
+                            case 0:
+                                record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                                break;
+                            case 1:
+                                record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                                break;
+                            case 2:
+                                record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                                break;
+                            default:
+                                record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
                         }
 
-                        if (users[0][index].ign == ign) {
-                            record +=    "<td><a href='/quests/" + users[0][index].uuid + "'><b>" + users[0][index].ign + "</b></a></td>";
+                        if (users[0][index].ign === ign) {
+                            record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
                         } else {
-                            record +=    "<td><a href='/quests/" + users[0][index].uuid + "'>" + users[0][index].ign + "</a></td>";
+                            record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
                         }
 
-                        record += "<td>" + users[0][index].quests + "</td>";
+                        record += `<td>${users[0][index].quests}</td>`;
                         $("#tbody-yearly").append(record);
 
                     }
                     var alert = "";
                     alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
-                    if (users[1] == 0) {
-                        alert += "   You are not placed because you completed <span class='badge badge-pill badge-dark'>" + users[2] + " quests</span> in <span class='badge badge-pill badge-dark'>" + year + "</span>";
+
+                    if (users[1] === 0) {
+                        alert += `   You are not placed because you completed <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
                     } else {
-                        alert += "   You are placed <span class='badge badge-pill badge-dark'>#" + users[1] + "</span> with <span class='badge badge-pill badge-dark'>" + users[2] + " quests</span> in <span class='badge badge-pill badge-dark'>" + year + "</span>";
+                        alert += `   You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
                     }
                     alert += "</div>";
                     $("#alert-yearly").append(alert);
@@ -1373,62 +1296,59 @@ $(function() {
 
     $(".games").on("click", function() {
         var game = $(this).attr("id");
-        if (game == "all") {
-            var ignObj;
+        var ignObj;
+
+        if (game === "all") {
             ignObj = {"ign": ign, "game": game, "num": 250};
         } else {
-            var ignObj;
             ignObj = {"ign": ign, "game": game, "num": 25};
         }
 
-        // $("#tbody").html("");
         $("#tableLoad").html("<div style='width: 100%; height: 100px;'><div style=''><i id='spinner' class='fa fa-angellist fa-spin fa-2x fa-fw'></i></div></div>");
 
         $.post("displayLeaderboard.php", JSON.stringify(ignObj), function (users) {
-            // $("#tableLoad").html("");
             $("#tbody").html("");
-            if (users != "") {
+            if (users !== "") {
                 users = JSON.parse(users);
-                for (var index in users[0]) {
+                for (let index in users[0]) {
                     var record = "";
 
-                    if (users[0][index].ign == ign) {
-                        if (lightmode === "dark") {
-                            record += "<tr class='table-active dark'>";
-                        } else {
-                            record += "<tr class='table-active'>";
-                        }
-
+                    if (users[0][index].ign === ign) {
+                        record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
                     } else {
                         record += "<tr>";
                     }
 
-                    if (index == 0) {
-                        record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                    } else if (index == 1) {
-                        record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                    } else if (index == 2) {
-                        record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                    } else {
-                        record += "<th scope='row'>" + parseInt(parseInt(index)+1) + "</th>";
+                    switch (index) {
+                        case 0:
+                            record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                            break;
+                        case 1:
+                            record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                            break;
+                        case 2:
+                            record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                            break;
+                        default:
+                            record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
                     }
 
-                    if (users[0][index].ign == ign) {
-                        record +=    "<td><a href='/quests/" + users[0][index].uuid + "'><b>" + users[0][index].ign + "</b></a></td>";
+                    if (users[0][index].ign === ign) {
+                        record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
                     } else {
-                        record +=    "<td><a href='/quests/" + users[0][index].uuid + "'>" + users[0][index].ign + "</a></td>";
+                        record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
                     }
 
-                    record += "<td>" + users[0][index].quests + "</td>" + "</tr>";
+                    record += `<td>${users[0][index].quests}</td></tr>`;
                     $("#tbody").append(record);
 
                 }
-                var alert = "";
 
+                var alert;
                 if (users[1] != null) {
-                    alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#" + users[1] + "</span> with <span class='badge badge-pill badge-dark'>" + users[2] + " quests</span> in <span class='badge badge-pill badge-dark'>" + getEnGameNames(game) + "</span></div>";
+                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
                 } else {
-                    alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#" + "∞" + "</span> with <span class='badge badge-pill badge-dark'>" + 0 + " quests</span> in <span class='badge badge-pill badge-dark'>" + getEnGameNames(game) + "</span></div>";
+                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#∞</span> with <span class='badge badge-pill badge-dark'>0 quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
                 }
 
                 $("#alert-overall").html(alert);
@@ -1436,7 +1356,7 @@ $(function() {
         });
     });
 
-    $("#yearly-loading").hide()
+    $("#yearly-loading").hide();
     $(".years").on("click", function() {
         var year = $(this).attr("id");
         $("#tbody-yearly").fadeOut(500);
@@ -1448,43 +1368,42 @@ $(function() {
             for (index in users[0]) {
                 var record = "";
 
-                if (users[0][index].ign == ign) {
-                    if (lightmode === "dark") {
-                        record += "<tr class='table-active dark'>";
-                    } else {
-                        record += "<tr class='table-active'>";
-                    }
-
+                if (users[0][index].ign === ign) {
+                    record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
                 } else {
                     record += "<tr>";
                 }
 
-                if (index == 0) {
-                    record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                } else if (index == 1) {
-                    record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                } else if (index == 2) {
-                    record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                } else {
-                    record += "<th scope='row'>" + parseInt(parseInt(index)+1) + "</th>";
+                switch (index) {
+                    case 0:
+                        record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                        break;
+                    case 1:
+                        record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                        break;
+                    case 2:
+                        record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
+                        break;
+                    default:
+                        record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
                 }
 
-                if (users[0][index].ign == ign) {
-                    record +=    "<td><a href='/quests/" + users[0][index].uuid + "'><b>" + users[0][index].ign + "</b></a></td>";
+                if (users[0][index].ign === ign) {
+                    record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
                 } else {
-                    record +=    "<td><a href='/quests/" + users[0][index].uuid + "'>" + users[0][index].ign + "</a></td>";
+                    record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
                 }
 
-                record += "<td>" + users[0][index].quests + "</td>";
+                record += `<td>${users[0][index].quests}</td>`;
                 $("#tbody-yearly").append(record);
 
             }
-            var alert = "";
+            var alert;
             alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
-            if (users[1] == 0) {
-                alert += "   You are not placed because you completed <span class='badge badge-pill badge-dark'>" + users[2] + " quests</span> in <span class='badge badge-pill badge-dark'>" + year + "</span>";
+            if (users[1] === 0) {
+                alert += `   You are not placed because you completed <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
             } else {
-                alert += "   You are placed <span class='badge badge-pill badge-dark'>#" + users[1] + "</span> with <span class='badge badge-pill badge-dark'>" + users[2] + " quests</span> in <span class='badge badge-pill badge-dark'>" + year + "</span>";
+                alert += `   You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
             }
             alert += "</div>";
             $("#yearly-loading").hide();
@@ -1497,11 +1416,8 @@ $(function() {
         var scrollTrigger = 100, // px
             backToTop = function () {
                 var scrollTop = $(window).scrollTop();
-                if (scrollTop > scrollTrigger) {
-                    $('#back-to-top').addClass('show');
-                } else {
-                    $('#back-to-top').removeClass('show');
-                }
+                if (scrollTop > scrollTrigger) $('#back-to-top').addClass('show');
+                else $('#back-to-top').removeClass('show');
             };
         backToTop();
         $(window).on('scroll', function () {
@@ -1545,11 +1461,11 @@ function getPercentageColour(percentage) {
         sel2 = colour3;
     }
 
-    for (var i=1;i<4;i++) {
+    for (let i=1; i<4; i++) {
         val1 = parseInt(sel1.match(reg)[i]);
         val2 = parseInt(sel2.match(reg)[i]);
         range = Math.abs(val1-val2);
-        if (i==1) {
+        if (i===1) {
             if (val1 > val2) {
                 colour += val1 - Math.floor(range*percentage);
             } else {
@@ -1557,9 +1473,9 @@ function getPercentageColour(percentage) {
             }
         } else {
             if (val1 > val2) {
-                colour += "," + parseInt(val1 - Math.floor(range*percentage));
+                colour += `,${parseInt(val1 - Math.floor(range * percentage))}`;
             } else {
-                colour += "," + parseInt(val1 + Math.floor(range*percentage));
+                colour += `,${parseInt(val1 + Math.floor(range * percentage))}`;
             }
         }
     }
@@ -1570,7 +1486,7 @@ function getPercentageColour(percentage) {
 
 function getEnQuestNames(quest_id) {
 
-    var enQuestName = "";
+    var enQuestName;
 
     switch(quest_id) {
         case "uhc_daily":
@@ -1654,9 +1570,6 @@ function getEnQuestNames(quest_id) {
         case "blitz_win_chaos":
             enQuestName = "Daily Quest: Chaos Win";
             break;
-        case "bedwars_daily_gifts":
-            enQuestName = "Daily Quest: Gifts";
-            break;
         default:
             enQuestName = "Quest: idk"
     }
@@ -1733,7 +1646,7 @@ function getQuestGames(key) {
 
 function getEnGameNames(game_id) {
 
-    var enGameName = "";
+    var enGameName;
 
     switch(game_id) {
         case "arcade":
@@ -1843,10 +1756,10 @@ function getEnGameNames(game_id) {
             break;
         case "duels":
             enGameName = "Duels";
-            break
+            break;
         case "prototype":
             enGameName = "The Pit";
-            break
+            break;
         default:
             enGameName = game_id
 
@@ -1942,7 +1855,7 @@ function doneToday(questTime) {
 
     var questTimeObject = new Date(questTime);
 
-    var dayQuest = moment(questTimeObject).tz('America/New_York').format('DD') // day of month of last quest EDT (SERVER)
+    var dayQuest = moment(questTimeObject).tz('America/New_York').format('DD'); // day of month of last quest EDT (SERVER)
     var dayNow = moment().tz('America/New_York').format('DD'); // day of month of today EDT (SERVER)
 
     var monthQuest = moment(questTimeObject).tz('America/New_York').format('MM'); // month of year of last quest EDT (SERVER)
@@ -1951,11 +1864,7 @@ function doneToday(questTime) {
     var yearQuest = moment(questTimeObject).tz('America/New_York').format('YYYY'); // year of last quest EDT (SERVER)
     var yearNow = moment().tz('America/New_York').format('YYYY'); // year of today EDT (SERVER)
 
-    if ((dayNow - dayQuest == 0) && (monthNow - monthQuest == 0) && (yearNow - yearQuest == 0)) {
-        return "Done";
-    } else {
-        return "Not done";
-    }
+    return ((dayNow - dayQuest === 0) && (monthNow - monthQuest === 0) && (yearNow - yearQuest === 0)) ? "Done" : "Not done";
 }
 
 function doneThisWeek(GMT_timeLastQuest) {
@@ -2194,77 +2103,32 @@ function darkmode() {
     }
 }
 
-function getRankColour(rankColour) {
-    var colour = "";
-
-    switch (rankColour) {
-        case "BLACK":
-            colour = "000000"
-            break;
-        case "DARK_GRAY":
-            colour = "555555"
-            break;
-        case "DARK_PURPLE":
-            colour = "AA00AA"
-            break;
-        case "DARK_GREEN":
-            colour = "008000"
-            break;
-        case "DARK_RED":
-            colour = "AA0000"
-            break;
-        case "PINK":
-            colour = "FF55FF"
-            break;
-        case "WHITE":
-            colour = "FFFFFF"
-            break;
-        case "BLUE":
-            colour = "5555FF"
-            break;
-        case "YELLOW":
-            colour = "FFFF55"
-            break;
-        case "GOLD":
-            colour = "FFAA00"
-            break;
-        case "DARK_AQUA":
-            colour = "00AAAA"
-            break;
-        default:
-            colour = "FF5555"
-
-    }
-
-    return colour;
-}
-
-function convertData(data, firstLogin) {
+function convertData(data) {
     var startDay = data[0][0];
     var day = new Date();
     var endDay = day.getTime();
 
     var isLastDay;
-    isLastDay = startDay == endDay;
+    isLastDay = startDay === endDay;
     var dayTick;
     dayTick = 1000 * 60 * 60 * 24;
     var temp;
     temp = [];
 
     //Create new array with 0 values for each day
-    temp.push([startDay, 0])
+    temp.push([startDay, 0]);
     while(!isLastDay) {
         startDay += dayTick;
-        temp.push([startDay, 0])
+        temp.push([startDay, 0]);
 
         var isLastDay;
         isLastDay = startDay >= endDay;
     }
 
     //Override all values with existing days
-    for (var i = 0; i < data.length; i++) {
-        for(var j = 0; j < temp.length; j++) {
-            if (temp[j][0] == data[i][0]) {
+    for (let i = 0; i < data.length; i++) {
+        for(let j = 0; j < temp.length; j++) {
+            if (temp[j][0] === data[i][0]) {
                 temp[j][1] = data[i][1];
                 break;
             }
@@ -2376,43 +2240,25 @@ function getXPToNextLevel(exp, newExp) {
     var totalExp = exp + newExp;
 
     var XP_Progress = totalExp - getTotalExpToFullLevel(getLevel(totalExp));
-    var value = getExpFromLevelToNext(getLevel(totalExp)) - XP_Progress;
 
-    return value;
+    return getExpFromLevelToNext(getLevel(totalExp)) - XP_Progress;
 
     function getLevel(exp) {
         return exp < 0 ? 1 : Math.floor(1 + REVERSE_PQ_PREFIX + Math.sqrt(REVERSE_CONST + GROWTH_DIVIDES_2 * exp));
-    }
-
-    function getExactLevel(exp) {
-        return getLevel(exp) + getPercentageToNextLevel(exp);
     }
 
     function getExpFromLevelToNext(level) {
         return level < 1 ? BASE : GROWTH * (level - 1) + BASE;
     }
 
-    function getTotalExpToLevel(level) {
-        var lv = Math.floor(level);
-        var x0 = getTotalExpToFullLevel(lv);
-        if (level === lv) return x0;
-        return (getTotalExpToFullLevel(lv + 1) - x0) * (level % 1) + x0;
-    }
-
     function getTotalExpToFullLevel(level) {
         return (HALF_GROWTH * (level - 2) + BASE) * (level - 1);
     }
-
-    function getPercentageToNextLevel(exp) {
-        var lv = getLevel(exp);
-        var x0 = getTotalExpToLevel(lv);
-        return (exp - x0) / (getTotalExpToLevel(lv + 1) - x0);
-    }
 }
 
-function convertDate(month) {
-    var year = month.substring(0,4);
-    var month = parseInt(month.substring(5,7));
+function convertDate(monthInput) {
+    var year = monthInput.substring(0,4);
+    var month = parseInt(monthInput.substring(5,7));
     var output = "";
 
     switch(month) {
