@@ -70,8 +70,8 @@ $(function() {
             });
 
             // Info box below name
-            var numQuestsCompleted = infoBox(quests, response);
-            function infoBox(quests, response) {
+            var numQuestsCompleted = infoBox(quests);
+            function infoBox(quests) {
 
                 const rankString = getDisplayName(resp.packageRank, resp.newPackageRank, resp.rankPlusColor, resp.displayname, resp.monthlyRankColor, resp.rank, resp.monthlyPackageRank);
 
@@ -693,82 +693,17 @@ $(function() {
 
             // Stats tab
             var expEarntMonth = 0;
-            statsTab(questList, quests, JSON.parse(response)[3], resp.uuid, questsInfo);
-            function statsTab(questList, quests, firstLogin, uuid, questsInfo) {
+            statsTab(questList, quests, resp.uuid, questsInfo);
+            function statsTab(questList, quests, uuid, questsInfo) {
 
-                var gameStrings = ["skywars", "arcade", "vampirez", "walls3", "battleground", "quake",
+                const gameStrings = ["skywars", "arcade", "vampirez", "walls3", "battleground", "quake",
                 "walls", "hungergames", "tntgames", "gingerbread", "paintball", "supersmash", "mcgo", "truecombat",
                 "arena", "uhc", "skyclash", "bedwars", "murdermystery", "buildbattle",
                 "duels", "prototype", "speeduhc"];
 
-                // Quests/Game
-                stats1(questList, gameStrings);
-                function stats1(questList, gameStrings) {
-                    var questsAllGamesChart = Highcharts.chart('questsAllGamesChart', {
-                        chart: {
-                            type: 'pie',
-                        },
-                        title: {
-                            text: 'Quests/Game'
-                        },
-                        series: [{
-                            name: 'Quests',
-                            colorByPoint: true,
-                            data: []
-                        }],
-                        credits: {
-                            enabled: false
-                        },
-                        exporting: {
-                            enabled: true,
-                            buttons: {
-                                contextButton: {
-                                    menuItems: ['viewFullscreen', 'separator', 'downloadJPEG', 'downloadPNG']
-                                }
-                            }
-                        }
-                    });
-
-                    var games = {};
-
-                    var gameIndex;
-                    for (gameIndex in gameStrings) {
-                        games[gameStrings[gameIndex]] = 0;
-                    }
-
-                    var index;
-                    for (index in questList) {
-                        var gameIndex;
-                        for (gameIndex in gameStrings) {
-                            if (questList[index].game === gameStrings[gameIndex]) {
-                                if (questList[index].completions != null) {
-                                    games[gameStrings[gameIndex]] += questList[index].completions
-                                }
-                            }
-                        }
-                    }
-
-                    var games2 = games;
-
-                    var sortable = [];
-                    for (let game in games2) {
-                        sortable.push([game, games2[game]]);
-                    }
-
-                    $.post("updateLeaderboard.php", JSON.stringify({"ign": ign, "quests": sortable, "uuid": resp.uuid}));
-
-                    sortable.sort(function(a, b) {
-                        return a[1] - b[1];
-                    });
-
-                    for (let game in sortable) {
-                        questsAllGamesChart.series[0].addPoint({name: getEnGameNames(sortable[game][0]), y: sortable[game][1]});
-                    }
-                }
-
                 // Quests/Time
-                var questsPerMonth = stats2(quests, firstLogin, uuid, ign);
-                function stats2(quests, firstLogin, uuid, ign) {
+                var questsPerMonth = stats1(quests, uuid, ign);
+                function stats1(quests, uuid, ign) {
 
                     var questsPerDay = {};
                     var questsPerDay2 = {};
@@ -777,6 +712,15 @@ $(function() {
                     var monthNow = moment().tz('America/New_York').format('MM');
                     var yearNow = moment().tz('America/New_York').format('YYYY');
                     var thisMonth = yearNow + "-" + monthNow;
+
+                    // populate months
+                    var firstDate = moment("2016-01-01");
+                    var currentDate = moment(new Date());
+
+                    while (firstDate.unix() <= currentDate.unix()) {
+                        questsPerMonth[moment(firstDate).format('YYYY-MM')] = 0;
+                        firstDate = moment(firstDate).add(1, 'months');
+                    }
 
                     // add quests to questsPerDay object
                     $.each(quests, function(key, value) {
@@ -794,7 +738,7 @@ $(function() {
                                 }
 
                                 if (date.getDate() < 10) {
-                                    dateString += "0" + date.getDate()
+                                    dateString += `0${date.getDate()}`
                                 } else {
                                     dateString += date.getDate()
                                 }
@@ -820,30 +764,17 @@ $(function() {
                                     questsPerDay[fullDateString] = 1
                                 }
 
-                                if (monthDateString in questsPerMonth) {
-                                    if (monthDateString === thisMonth) {
-                                        $.each(questsInfo, function(key2, questINFO) {
-                                            for (let i=0; i<questINFO.length; i++) {
-                                                if (questINFO[i].id === key) {
-                                                    expEarntMonth += questINFO[i].rewards[0].amount;
-                                                }
+                                if (monthDateString === thisMonth) {
+                                    $.each(questsInfo, function(key2, questINFO) {
+                                        for (let i=0; i<questINFO.length; i++) {
+                                            if (questINFO[i].id === key) {
+                                                expEarntMonth += questINFO[i].rewards[0].amount;
                                             }
-                                        });
-                                    }
-                                    questsPerMonth[monthDateString] += 1
-                                } else {
-                                    if (monthDateString === thisMonth) {
-                                        $.each(questsInfo, function(key2, questINFO) {
-                                            for (let i=0; i<questINFO.length; i++) {
-                                                if (questINFO[i].id === key) {
-                                                    expEarntMonth += questINFO[i].rewards[0].amount;
-                                                }
-                                            }
-                                        });
-                                    }
-                                    questsPerMonth[monthDateString] = 1
+                                        }
+                                    });
                                 }
 
+                                questsPerMonth[monthDateString] += 1
                             }
                         }
                     });
@@ -869,7 +800,7 @@ $(function() {
 
                     data = convertData(data);
 
-                    Highcharts.stockChart('questsAllGamesChart2', {
+                    Highcharts.stockChart('chart1', {
                         chart: {
                             zoomType: 'x'
                         },
@@ -881,7 +812,7 @@ $(function() {
                         },
                         subtitle: {
                             text: document.ontouchstart === undefined ?
-                                    'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+                                'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
                         },
                         xAxis: {
                             type: 'datetime',
@@ -946,14 +877,12 @@ $(function() {
                     monthlyLeaderboardTab(data2, ign);
 
                     return data2;
-
                 }
 
                 // Quests/Month
-                stats3(questsPerMonth);
-                function stats3(questsPerMonth) {
-
-                    Highcharts.chart('questsAllGamesChart3', {
+                stats2(questsPerMonth);
+                function stats2(questsPerMonth) {
+                    Highcharts.chart('chart2', {
                         chart: {
                             type: 'spline'
                         },
@@ -1002,12 +931,139 @@ $(function() {
                             data: questsPerMonth
                         }]
                     });
+                }
 
+                // Total Quests/Month
+                stats3(questsPerMonth);
+                function stats3(questsPerMonth) {
+
+                    var total = 0;
+                    var totalQuestsPerMonth = [];
+
+                    $.each(questsPerMonth, function (i, month) {
+                        total += month[1];
+                        totalQuestsPerMonth.push([month[0], total]);
+                    });
+
+                    Highcharts.chart('chart3', {
+                        chart: {
+                            type: 'spline'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        exporting: {
+                            enabled: true,
+                            buttons: {
+                                contextButton: {
+                                    menuItems: ['viewFullscreen', 'separator', 'downloadJPEG', 'downloadPNG']
+                                }
+                            }
+                        },
+                        title: {
+                            text: 'Total Quests / Month'
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Total Quests'
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            title: {
+                                text: 'Month'
+                            }
+                        },
+                        tooltip: {
+                            crosshairs: true
+                        },
+                        plotOptions: {
+                            spline: {
+                                marker: {
+                                    radius: 4,
+                                    lineColor: '#666666',
+                                    lineWidth: 1
+                                }
+                            }
+                        },
+                        series: [{
+                            name: "Total Quests",
+                            data: totalQuestsPerMonth
+                        }]
+                    });
+                }
+
+                // Quests/Game
+                stats4(questList, gameStrings);
+                function stats4(questList, gameStrings) {
+                    var questsAllGamesChart = Highcharts.chart('chart4', {
+                        chart: {
+                            type: 'pie',
+                        },
+                        title: {
+                            text: 'Quests/Game'
+                        },
+                        series: [{
+                            name: 'Quests',
+                            colorByPoint: true,
+                            data: []
+                        }],
+                        credits: {
+                            enabled: false
+                        },
+                        exporting: {
+                            enabled: true,
+                            buttons: {
+                                contextButton: {
+                                    menuItems: ['viewFullscreen', 'separator', 'downloadJPEG', 'downloadPNG']
+                                }
+                            }
+                        }
+                    });
+
+                    var games = {};
+
+                    var gameIndex;
+                    for (gameIndex in gameStrings) {
+                        games[gameStrings[gameIndex]] = 0;
+                    }
+
+                    var index;
+                    for (index in questList) {
+                        var gameIndex;
+                        for (gameIndex in gameStrings) {
+                            if (questList[index].game === gameStrings[gameIndex]) {
+                                if (questList[index].completions != null) {
+                                    games[gameStrings[gameIndex]] += questList[index].completions
+                                }
+                            }
+                        }
+                    }
+
+                    var games2 = games;
+
+                    var sortable = [];
+                    for (let game in games2) {
+                        sortable.push([game, games2[game]]);
+                    }
+
+                    $.post("updateLeaderboard.php", JSON.stringify({"ign": ign, "quests": sortable, "uuid": resp.uuid}));
+
+                    sortable.sort(function(a, b) {
+                        return a[1] - b[1];
+                    });
+
+                    for (let game in sortable) {
+                        questsAllGamesChart.series[0].addPoint({name: getEnGameNames(sortable[game][0]), y: sortable[game][1]});
+                    }
                 }
 
                 // Quests/Quest
-                stats4(questList, gameStrings);
-                function stats4(questList, gameStrings) {
+                stats5(questList, gameStrings);
+                function stats5(questList, gameStrings) {
 
                     var games = [];
                     var questName = "";
@@ -1045,7 +1101,7 @@ $(function() {
                         }
                     }
 
-                    Highcharts.chart('questsAllGamesChart4', {
+                    Highcharts.chart('chart5', {
                         chart: {
                             type: 'packedbubble',
                             height: "auto"
@@ -1118,13 +1174,13 @@ $(function() {
                             }
 
                             switch (index) {
-                                case 0:
+                                case "0":
                                     record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
                                     break;
-                                case 1:
+                                case "1":
                                     record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
                                     break;
-                                case 2:
+                                case "2":
                                     record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
                                     break;
                                 default:
@@ -1180,13 +1236,13 @@ $(function() {
                         }
 
                         switch (index) {
-                            case 0:
+                            case "0":
                                 record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
                                 break;
-                            case 1:
+                            case "1":
                                 record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
                                 break;
-                            case 2:
+                            case "2":
                                 record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
                                 break;
                             default:
@@ -1205,7 +1261,7 @@ $(function() {
 
                     }
 
-                    var alert = "";
+                    var alert;
                     alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
                     alert += `   You are currently placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${questsThisMonth} quests</span> this month,`;
                     alert += `   earning a total of <span class='badge badge-pill badge-dark'>${numberWithCommas(expEarntMonth)}</span> exp`;
@@ -1232,13 +1288,13 @@ $(function() {
                         }
 
                         switch (index) {
-                            case 0:
+                            case "0":
                                 record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                                 break;
-                            case 1:
+                            case "1":
                                 record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                                 break;
-                            case 2:
+                            case "2":
                                 record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                                 break;
                             default:
@@ -1296,13 +1352,8 @@ $(function() {
 
     $(".games").on("click", function() {
         var game = $(this).attr("id");
-        var ignObj;
 
-        if (game === "all") {
-            ignObj = {"ign": ign, "game": game, "num": 250};
-        } else {
-            ignObj = {"ign": ign, "game": game, "num": 25};
-        }
+        var ignObj = {"ign": ign, "game": game, "num": game === "all" ? 250 : 25};
 
         $("#tableLoad").html("<div style='width: 100%; height: 100px;'><div style=''><i id='spinner' class='fa fa-angellist fa-spin fa-2x fa-fw'></i></div></div>");
 
@@ -1320,13 +1371,13 @@ $(function() {
                     }
 
                     switch (index) {
-                        case 0:
+                        case "0":
                             record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                             break;
-                        case 1:
+                        case "1":
                             record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                             break;
-                        case 2:
+                        case "2":
                             record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                             break;
                         default:
@@ -1375,13 +1426,13 @@ $(function() {
                 }
 
                 switch (index) {
-                    case 0:
+                    case "0":
                         record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                         break;
-                    case 1:
+                    case "1":
                         record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                         break;
-                    case 2:
+                    case "2":
                         record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
                         break;
                     default:

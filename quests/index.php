@@ -57,7 +57,6 @@
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.1/dist/fullcalendar.min.js"></script>
 
     </head>
-
     <body>
         <div id="loading">
             <div class="modal-dialog" style="padding: 10% 0;">
@@ -129,7 +128,7 @@
                         <a class="nav-link" data-toggle="tab" href="#weekly" role="tab" aria-controls="weekly" aria-selected="false">Weekly</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Leaderboards <span class="badge badge-primary">New</span></a>
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Leaderboards</a>
                         <div class="dropdown-menu" id="dropdown">
                             <a class="dropdown-item" data-toggle="tab" href="#overall">Overall</a>
                             <a class="dropdown-item" data-toggle="tab" href="#monthly">Monthly</a>
@@ -138,7 +137,7 @@
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#stats" role="tab" aria-controls="stats" aria-selected="false">Stats</a>
+                        <a class="nav-link" data-toggle="tab" href="#stats" role="tab" aria-controls="stats" aria-selected="false">Charts</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#calendar" role="tab" aria-controls="calendar" aria-selected="false">Calendar</a>
@@ -342,14 +341,16 @@
                         <br>
                         <div id="stats">
                             <div id="stats" class="card-columns1">
-                                <div id="questsAllGamesChart2"></div>
+                                <div id="chart1"></div>
                                 <hr style="margin-top: 2rem; margin-bottom: 2rem;">
-                                <div id="questsAllGamesChart3"></div>
+                                <div id="chart2"></div>
                                 <div id="sum"></div>
                                 <hr style="margin-top: 2rem; margin-bottom: 2rem;">
-                                <div id="questsAllGamesChart"></div>
+                                <div id="chart3"></div>
                                 <hr style="margin-top: 2rem; margin-bottom: 2rem;">
-                                <div id="questsAllGamesChart4"></div>
+                                <div id="chart4"></div>
+                                <hr style="margin-top: 2rem; margin-bottom: 2rem;">
+                                <div id="chart5"></div>
                             </div>
                         </div>
                     </div>
