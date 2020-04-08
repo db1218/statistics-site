@@ -65,7 +65,18 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <th scope="row">2.6</th>
+                        <th scope="row">2.7</th>
+                        <td>TheQuestingMod-2.7.jar</td>
+                        <td>08/04/20</td>
+                        <td>
+                            <a href="#" data-container="body" data-toggle="popover" data-placement="right"
+                               data-content="Updated blitz weekly">
+                                Notes
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="font-weight: normal;">2.6</th>
                         <td>TheQuestingMod-2.6.jar</td>
                         <td>21/02/20</td>
                         <td>
@@ -231,7 +242,7 @@
                         Versions
                     </button>
                     <p class="lead" style="margin-bottom:0px;">
-                        <a href="versions/TheQuestingMod-2.6.jar" class="btn btn-lg btn-primary" id="downloadHomepage">Download
+                        <a href="versions/TheQuestingMod-2.7.jar" class="btn btn-lg btn-primary" id="downloadHomepage">Download
                             <i class="fa fa-download"></i></a>
                     </p>
                 </div>
