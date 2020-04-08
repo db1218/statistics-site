@@ -71,7 +71,8 @@ $(function() {
             });
 
             // Info box below name
-            var numQuestsCompleted = infoBox(quests);
+            var numQuestsCompleted = 0;
+            infoBox(quests);
             function infoBox(quests) {
 
                 const rankString = getDisplayName(resp.packageRank, resp.newPackageRank, resp.rankPlusColor, resp.displayname, resp.monthlyRankColor, resp.rank, resp.monthlyPackageRank);
@@ -79,12 +80,11 @@ $(function() {
                 $("#heading").html(colourParser(rankString));
 
                 // print quests
+                printNumQuests(quests);
                 printLevel();
                 printAchievements(resp.achievementPoints);
 
                 function printNumQuests(quests) {
-
-                    var numQuestsCompleted = 0;
 
                     $.each(quests, function(individualQuestsName, individualQuestsObject) {
                         $.each(individualQuestsObject, function(completionsName, completionsObject) {
@@ -105,14 +105,12 @@ $(function() {
 
                     var card="";
                     card += `<div class='card border-default mb-3 ${lightmode === "dark" ? "dark" : ""}'>`;
-                    card += "	<div id='info' class='card-body row text-center'>";
-                    card += `\t\t<div class='col-sm'>Quests Completed <span class='badge badge-pill badge-secondary'>${numQuestsCompleted}</span></div>`;
-                    card += "	</div>";
+                    card += "<div id='info' class='card-body row text-center'>";
+                    card += `<div class='col-sm'>Quests Completed <span class='badge badge-pill badge-secondary'>${numQuestsCompleted}</span></div>`;
+                    card += "</div>";
                     card += "</div>";
 
                     $("#gen").html(card);
-
-                    return numQuestsCompleted;
 
                 } // Loops through all quests and totals them - returns num of quests
 
@@ -122,35 +120,29 @@ $(function() {
 
                     var card = "";
                     card += `<div class='card border-default mb-3 ${lightmode === "dark" ? "dark" : ""}'>`;
-                    card += "	<div id='info' class='card-body'>";
-                    card += "		<p>Progress to next level</p>";
-                    card += `		<div class='progress ${lightmode === "dark" ? "dark" : ""}'>`;
+                    card += "<div id='info' class='card-body'>";
+                    card += "<p>Progress to next level</p>";
+                    card += `<div class='progress ${lightmode === "dark" ? "dark" : ""}'>`;
                     var percentage = getPercentageToNextLevel(exp, newExp);
                     var colour = getPercentageColour(percentage);
                     if (percentage*100 >= 20) {
-                        card += `       <div class='progress-bar progress-bar-striped bg' role='progressbar' style='width: ${percentage * 100}%; background-color: ${colour}' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>${Math.floor(getPercentageToNextLevel(exp, newExp) * 100)}% (${getXPToNextLevel(exp, newExp).toLocaleString()} xp)</div>`;
+                        card += `<div class='progress-bar progress-bar-striped bg' role='progressbar' style='width: ${percentage * 100}%; background-color: ${colour}' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>${Math.floor(getPercentageToNextLevel(exp, newExp) * 100)}% (${getXPToNextLevel(exp, newExp).toLocaleString()} xp)</div>`;
                     } else {
-                        card += `       <div class='progress-bar progress-bar-striped bg' role='progressbar' style='width: ${percentage * 100}%; background-color: ${colour}' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>${Math.floor(getPercentageToNextLevel(exp, newExp) * 100)}%</div>`;
+                        card += `<div class='progress-bar progress-bar-striped bg' role='progressbar' style='width: ${percentage * 100}%; background-color: ${colour}' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>${Math.floor(getPercentageToNextLevel(exp, newExp) * 100)}%</div>`;
                     }
-                    card += "		</div>";
-                    card += "	</div>";
+                    card += "</div>";
+                    card += "</div>";
                     card += "</div>";
 
                     $("#gen").append(card);
-
-                    var level = `<div class='col-sm'>Network Level <span class='badge badge-pill badge-secondary'>${getNetworkLevel(exp, newExp)}</span></div>`;
-                    $("#info").append(level);
-
+                    $("#info").append(`<div class='col-sm'>Network Level <span class='badge badge-pill badge-secondary'>${getNetworkLevel(exp, newExp)}</span></div>`);
                 }
 
                 function printAchievements(achievementPoints) {
                     if (achievementPoints != null) {
-                        $("#info").append(`<div class='col-sm'><a href='/achievements/"${ign}"' style='color:#c1c1c1;'><u class='${lightmode === "dark" ? "dark" : ""}'>Achievement Points</u> <span class='badge badge-pill badge-secondary'>"${achievementPoints}</a></span></div>`);
+                        $("#info").append(`<div class='col-sm'><a href='/achievements/${ign}' style='color:#c1c1c1;'><u class='${lightmode === "dark" ? "dark" : ""}'>Achievement Points</u> <span class='badge badge-pill badge-secondary'>${achievementPoints}</a></span></div>`);
                     }
                 }
-
-                return printNumQuests(quests);
-
             }
 
             // Daily & Weekly tabs
