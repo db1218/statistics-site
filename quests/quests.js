@@ -1,4 +1,5 @@
 import {colourParser, getDisplayName} from "../Utilities/FormatName.js";
+import {generateLeaderboard} from "../Utilities/GenerateLeaderboard.js";
 
 $(function() {
 
@@ -48,7 +49,7 @@ $(function() {
 
     const ign = $("#ign").html().trim();
 
-    document.title = ign + " | Hypixel Questing Tool";
+    document.title = `${ign} | Hypixel Questing Tool`;
 
     $.get("https://api.hypixel.net/resources/quests", function (response) {
 
@@ -105,7 +106,7 @@ $(function() {
                     var card="";
                     card += `<div class='card border-default mb-3 ${lightmode === "dark" ? "dark" : ""}'>`;
                     card += "	<div id='info' class='card-body row text-center'>";
-                    card += "		<div class='col-sm'>Quests Completed <span class='badge badge-pill badge-secondary'>" + numQuestsCompleted + "</span></div>";
+                    card += `\t\t<div class='col-sm'>Quests Completed <span class='badge badge-pill badge-secondary'>${numQuestsCompleted}</span></div>`;
                     card += "	</div>";
                     card += "</div>";
 
@@ -127,9 +128,9 @@ $(function() {
                     var percentage = getPercentageToNextLevel(exp, newExp);
                     var colour = getPercentageColour(percentage);
                     if (percentage*100 >= 20) {
-                        card += "       <div class='progress-bar progress-bar-striped bg' role='progressbar' style='width: " + (percentage * 100) + "%; background-color: " + colour + "' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>"+ Math.floor(getPercentageToNextLevel(exp, newExp) * 100) + "% (" + getXPToNextLevel(exp, newExp).toLocaleString() + " xp)</div>";
+                        card += `       <div class='progress-bar progress-bar-striped bg' role='progressbar' style='width: ${percentage * 100}%; background-color: ${colour}' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>${Math.floor(getPercentageToNextLevel(exp, newExp) * 100)}% (${getXPToNextLevel(exp, newExp).toLocaleString()} xp)</div>`;
                     } else {
-                        card += "       <div class='progress-bar progress-bar-striped bg' role='progressbar' style='width: " + (percentage * 100) + "%; background-color: " + colour + "' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>"+ Math.floor(getPercentageToNextLevel(exp, newExp) * 100) + "%</div>";
+                        card += `       <div class='progress-bar progress-bar-striped bg' role='progressbar' style='width: ${percentage * 100}%; background-color: ${colour}' aria-valuenow='25' aria-valuemin='0' aria-valuemax='100'>${Math.floor(getPercentageToNextLevel(exp, newExp) * 100)}%</div>`;
                     }
                     card += "		</div>";
                     card += "	</div>";
@@ -144,8 +145,7 @@ $(function() {
 
                 function printAchievements(achievementPoints) {
                     if (achievementPoints != null) {
-                        var level = `<div class='col-sm'><a href='/achievements/" + ign + "' style='color:#c1c1c1;'><u class='${lightmode === "dark" ? "dark" : ""}'>Achievement Points</u> <span class='badge badge-pill badge-secondary'>" + achievementPoints + "</a></span></div>`;
-                        $("#info").append(level);
+                        $("#info").append(`<div class='col-sm'><a href='/achievements/"${ign}"' style='color:#c1c1c1;'><u class='${lightmode === "dark" ? "dark" : ""}'>Achievement Points</u> <span class='badge badge-pill badge-secondary'>"${achievementPoints}</a></span></div>`);
                     }
                 }
 
@@ -287,7 +287,7 @@ $(function() {
                                         if (doneToday(latest) === "Not done") {
                                             if (jQuery.isEmptyObject(questsAPI[property].active)) {
                                                 // print quest not started
-                                                dailyCard += description + "<span class='badge badge-pill badge-danger'>0/" + goal + "</span>";
+                                                dailyCard += `${description}<span class='badge badge-pill badge-danger'>0/${goal}</span>`;
                                             } else {
                                                 var objectiveID = Object.keys(questsAPI[property].active);
 
@@ -500,7 +500,7 @@ $(function() {
                                                         } else {
                                                             weeklyCard += `${description}<span class='badge badge-pill badge-danger'>`;
                                                             weeklyCard += 0;
-                                                            weeklyCard += "/" + goal + "</span>";
+                                                            weeklyCard += `/${goal}</span>`;
                                                             percentage += 0;
                                                         }
 
@@ -562,9 +562,9 @@ $(function() {
                 var weeklyText = "";
 
                 if (weeklyDoneToday === 1) {
-                    weeklyText = " (including " + 1 + " weekly quest)";
+                    weeklyText = ` (including 1 weekly quest)`;
                 } else if (weeklyDoneToday > 1) {
-                    weeklyText = " (including " + weeklyDoneToday + " weekly quests)";
+                    weeklyText = ` (including ${weeklyDoneToday} weekly quests)`;
                 }
 
                 var alert = `<div style='text-align: center; border;' class='alert' style='background-color: #FFFFFF' role='alert'>You have done <span class='badge badge-pill badge-dark'><b>${questsDoneToday}</b> / ${totalQuestsPossible}</span> daily quests today, that's  <span class='badge badge-pill badge-dark'>${Math.round((questsDoneToday / totalQuestsPossible) * 100)}%</span>`;
@@ -648,44 +648,10 @@ $(function() {
                 $.post("displayLeaderboard.php", JSON.stringify({"ign": ign, "game": "all", "uuid": resp.uuid, "num": 250}), function (users) {
 
                     users = JSON.parse(users);
-
-                    for (let index in users[0]) {
-                        var record = "";
-
-                        if (users[0][index].ign === ign) {
-                            record += `<tr class='table-active ${lightmode === "dark" ? "dark" : ""}'>`;
-                        } else {
-                            record += "<tr>";
-                        }
-
-                        switch (index) {
-                            case "0":
-                                record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                                break;
-                            case "1":
-                                record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                                break;
-                            case "2":
-                                record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                                break;
-                            default:
-                                record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
-                        }
-
-                        if (users[0][index].ign === ign) {
-                            record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
-                        } else {
-                            record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
-                        }
-
-
-                        record += `<td> ${users[0][index].quests} </td></tr>`;
-                        $("#tbody").append(record);
-
-                    }
+                    $("#tbody").html(generateLeaderboard(users, lightmode, ign));
 
                     var alert;
-                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'># ${users[1]} + </span> with <span class='badge badge-pill badge-dark'> + ${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>All games</span></div>`;
+                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>All games</span></div>`;
                     $("#alert-overall").append(alert);
 
                 });
@@ -1162,44 +1128,9 @@ $(function() {
                     $.post("displayMonthlyOverallLeaderboard.php", JSON.stringify({"uuid": uuid}), function(users) {
 
                         users = JSON.parse(users);
+                        $("#tbody-monthly-record").html(generateLeaderboard(users, lightmode, ign));
 
-                        var index;
-                        for (index in users[0]) {
-                            var record = "";
-
-                            if (users[0][index].ign === ign) {
-                                record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
-                            } else {
-                                record += "<tr>";
-                            }
-
-                            switch (index) {
-                                case "0":
-                                    record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                                    break;
-                                case "1":
-                                    record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                                    break;
-                                case "2":
-                                    record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                                    break;
-                                default:
-                                    record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
-                            }
-
-                            if (users[0][index].ign === ign) {
-                                record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
-                            } else {
-                                record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
-                            }
-
-                            record += `<td>${users[0][index].quests}</td>`;
-                            record += `<td>${convertDate(users[0][index].month)}</td></tr>`;
-                            $("#tbody-monthly-record").append(record);
-
-                        }
-
-                        var alert = "";
+                        var alert;
                         alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with a record of <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in the month of <span class='badge badge-pill badge-dark'>${convertDate(users[3])}</span></div>`;
                         $("#alert-monthly-record").append(alert);
 
@@ -1224,49 +1155,14 @@ $(function() {
                 $.post("displayMonthlyLeaderboard.php", JSON.stringify({"ign": ign, "uuid": resp.uuid, thisMonth}), function(users) {
 
                     users = JSON.parse(users);
-
-                    var index;
-                    for (index in users[0]) {
-                        var record = "";
-
-                        if (users[0][index].ign === ign) {
-                            record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
-                        } else {
-                            record += "<tr>";
-                        }
-
-                        switch (index) {
-                            case "0":
-                                record += "<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                                break;
-                            case "1":
-                                record += "<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                                break;
-                            case "2":
-                                record += "<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> " + parseInt(parseInt(index)+1) + "</th>";
-                                break;
-                            default:
-                                record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
-                        }
-
-                        if (users[0][index].ign === ign) {
-                            record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
-                        } else {
-                            record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
-                        }
-
-
-                        record += `<td>${users[0][index].quests}</td></tr>`;
-                        $("#tbody-monthly").append(record);
-
-                    }
+                    $("#tbody-monthly").html(generateLeaderboard(users, lightmode, ign));
 
                     var alert;
                     alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
                     alert += `   You are currently placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${questsThisMonth} quests</span> this month,`;
                     alert += `   earning a total of <span class='badge badge-pill badge-dark'>${numberWithCommas(expEarntMonth)}</span> exp`;
                     alert += "</div>";
-                    $("#alert-monthly").append(alert);
+                    $("#alert-monthly").html(alert);
 
                 });
 
@@ -1276,42 +1172,11 @@ $(function() {
             function yearlyLeaderboardTab(ign, year) {
                 // display monthly leaderboard
                 $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(users) {
+
                     users = JSON.parse(users);
-                    var index;
-                    for (index in users[0]) {
-                        var record = "";
+                    $("#tbody-yearly").html(generateLeaderboard(users, lightmode, ign));
 
-                        if (users[0][index].ign === ign) {
-                            record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
-                        } else {
-                            record += "<tr>";
-                        }
-
-                        switch (index) {
-                            case "0":
-                                record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                                break;
-                            case "1":
-                                record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                                break;
-                            case "2":
-                                record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                                break;
-                            default:
-                                record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
-                        }
-
-                        if (users[0][index].ign === ign) {
-                            record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
-                        } else {
-                            record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
-                        }
-
-                        record += `<td>${users[0][index].quests}</td>`;
-                        $("#tbody-yearly").append(record);
-
-                    }
-                    var alert = "";
+                    var alert;
                     alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
 
                     if (users[1] === 0) {
@@ -1358,52 +1223,17 @@ $(function() {
         $("#tableLoad").html("<div style='width: 100%; height: 100px;'><div style=''><i id='spinner' class='fa fa-angellist fa-spin fa-2x fa-fw'></i></div></div>");
 
         $.post("displayLeaderboard.php", JSON.stringify(ignObj), function (users) {
-            $("#tbody").html("");
-            if (users !== "") {
-                users = JSON.parse(users);
-                for (let index in users[0]) {
-                    var record = "";
+            users = JSON.parse(users);
+            $("#tbody").html(generateLeaderboard(users, lightmode, ign));
 
-                    if (users[0][index].ign === ign) {
-                        record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
-                    } else {
-                        record += "<tr>";
-                    }
-
-                    switch (index) {
-                        case "0":
-                            record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                            break;
-                        case "1":
-                            record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                            break;
-                        case "2":
-                            record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                            break;
-                        default:
-                            record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
-                    }
-
-                    if (users[0][index].ign === ign) {
-                        record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
-                    } else {
-                        record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
-                    }
-
-                    record += `<td>${users[0][index].quests}</td></tr>`;
-                    $("#tbody").append(record);
-
-                }
-
-                var alert;
-                if (users[1] != null) {
-                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
-                } else {
-                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#∞</span> with <span class='badge badge-pill badge-dark'>0 quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
-                }
-
-                $("#alert-overall").html(alert);
+            var alert;
+            if (users[1] != null) {
+                alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
+            } else {
+                alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#∞</span> with <span class='badge badge-pill badge-dark'>0 quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
             }
+
+            $("#alert-overall").html(alert);
         });
     });
 
@@ -1413,42 +1243,8 @@ $(function() {
         $("#tbody-yearly").fadeOut(500);
         $("#yearly-loading").fadeIn(100);
         $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(users) {
-            $("#tbody-yearly").html("");
             users = JSON.parse(users);
-            var index;
-            for (index in users[0]) {
-                var record = "";
-
-                if (users[0][index].ign === ign) {
-                    record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
-                } else {
-                    record += "<tr>";
-                }
-
-                switch (index) {
-                    case "0":
-                        record += `<th scope='row'><i class='fa fa-trophy' style='color: gold;' title='#1 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                        break;
-                    case "1":
-                        record += `<th scope='row'><i class='fa fa-trophy' style='color: silver;' title='#2 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                        break;
-                    case "2":
-                        record += `<th scope='row'><i class='fa fa-trophy' style='color: #A67D3D;' title='#3 Quester'></i> ${parseInt(parseInt(index) + 1)}</th>`;
-                        break;
-                    default:
-                        record += `<th scope='row'>${parseInt(parseInt(index) + 1)}</th>`;
-                }
-
-                if (users[0][index].ign === ign) {
-                    record +=    `<td><a href='/quests/${users[0][index].uuid}'><b>${users[0][index].ign}</b></a></td>`;
-                } else {
-                    record +=    `<td><a href='/quests/${users[0][index].uuid}'>${users[0][index].ign}</a></td>`;
-                }
-
-                record += `<td>${users[0][index].quests}</td>`;
-                $("#tbody-yearly").append(record);
-
-            }
+            $("#tbody-yearly").html(generateLeaderboard(users, lightmode, ign));
             var alert;
             alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
             if (users[1] === 0) {
@@ -2339,6 +2135,6 @@ function convertDate(monthInput) {
             break;
         }
 
-    return output + " " + year;
+    return `${output} ${year}`;
 
 }
