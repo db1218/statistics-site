@@ -8,8 +8,7 @@
     $game = urlencode($nameInput->game);
     $num = urlencode($nameInput->num);
 
-    $url = file_get_contents("https://api.mojang.com/users/profiles/minecraft/$ign");
-    $JSONobj = json_decode($url);
+    $JSONobj = json_decode(file_get_contents("https://api.mojang.com/users/profiles/minecraft/$ign"));
     $uuid = $JSONobj->id;
 
     // Create connection
@@ -45,13 +44,11 @@
 
             }
 
-            $response = [];
+            $response = new \stdClass();
 
-            $short_users = array_slice($users, 0, $num);
-
-            array_push($response, $short_users);
-            array_push($response, $position);
-            array_push($response, $quests);
+            $response->users = array_slice($users, 0, $num);
+            $response->position = $position;
+            $response->quests = $quests;
 
             echo json_encode($response);
 

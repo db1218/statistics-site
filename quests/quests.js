@@ -637,13 +637,13 @@ $(function() {
             // Leaderboard tab
             overalLeaderboardTab(ign);
             function overalLeaderboardTab(ign) {
-                $.post("displayLeaderboard.php", JSON.stringify({"ign": ign, "game": "all", "uuid": resp.uuid, "num": 250}), function (users) {
+                $.post("displayLeaderboard.php", JSON.stringify({"ign": ign, "game": "all", "uuid": resp.uuid, "num": 250}), function (result) {
 
-                    users = JSON.parse(users);
-                    $("#tbody").html(generateLeaderboard(users, lightmode, ign));
+                    result = JSON.parse(result);
+                    $("#tbody").html(generateLeaderboard(result.users, lightmode, ign));
 
                     var alert;
-                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>All games</span></div>`;
+                    alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${result.position}</span> with <span class='badge badge-pill badge-dark'>${result.quests} quests</span> in <span class='badge badge-pill badge-dark'>All games</span></div>`;
                     $("#alert-overall").append(alert);
 
                 });
@@ -1117,41 +1117,36 @@ $(function() {
 
             function monthlyOverall(monthQuest, uuid, ign) {
                 $.post("updateMonthlyOverallLeaderboard.php", JSON.stringify({"uuid": uuid, "quests": monthQuest, "ign": ign}), function() {
-                    $.post("displayMonthlyOverallLeaderboard.php", JSON.stringify({"uuid": uuid}), function(users) {
+                    $.post("displayMonthlyOverallLeaderboard.php", JSON.stringify({"uuid": uuid}), function(result) {
 
-                        users = JSON.parse(users);
-                        $("#tbody-monthly-record").html(generateLeaderboard(users, lightmode, ign));
+                        result = JSON.parse(result);
+                        $("#tbody-monthly-record").html(generateLeaderboard(result.users, lightmode, ign));
 
                         var alert;
-                        alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with a record of <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in the month of <span class='badge badge-pill badge-dark'>${convertDate(users[3])}</span></div>`;
+                        alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${result.position}</span> with a personal record of <span class='badge badge-pill badge-dark'>${result.quests} quests</span> in the month of <span class='badge badge-pill badge-dark'>${moment(result.month).format("MMM YYYY")}</span></div>`;
                         $("#alert-monthly-record").append(alert);
 
                     });
                 });
-
             }
 
             function monthlyLeaderboardTab(monthQuest, ign) {
-
-                var monthNow = moment().tz('America/New_York').format('MM');
-                var yearNow = moment().tz('America/New_York').format('YYYY');
-                var thisMonth = yearNow + "-" + monthNow;
                 var questsThisMonth = 0;
 
                 // if they have done a quest this month
-                if (monthQuest[monthQuest.length-1][0] === thisMonth) {
+                if (monthQuest[monthQuest.length-1][0] === moment().tz('America/New_York').format('YYYY-MM')) {
                     questsThisMonth = monthQuest[monthQuest.length-1][1];
                 }
 
                 // display monthly leaderboard
-                $.post("displayMonthlyLeaderboard.php", JSON.stringify({"ign": ign, "uuid": resp.uuid, thisMonth}), function(users) {
+                $.post("displayMonthlyLeaderboard.php", JSON.stringify({"ign": ign, "uuid": resp.uuid}), function(result) {
 
-                    users = JSON.parse(users);
-                    $("#tbody-monthly").html(generateLeaderboard(users, lightmode, ign));
+                    result = JSON.parse(result);
+                    $("#tbody-monthly").html(generateLeaderboard(result.users, lightmode, ign));
 
                     var alert;
                     alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
-                    alert += `   You are currently placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${questsThisMonth} quests</span> this month,`;
+                    alert += `   You are currently placed <span class='badge badge-pill badge-dark'>#${result.position}</span> with <span class='badge badge-pill badge-dark'>${result.quests} quests</span> this month,`;
                     alert += `   earning a total of <span class='badge badge-pill badge-dark'>${numberWithCommas(expEarntMonth)}</span> exp`;
                     alert += "</div>";
                     $("#alert-monthly").html(alert);
@@ -1163,18 +1158,18 @@ $(function() {
             yearlyLeaderboardTab(ign, "2020");
             function yearlyLeaderboardTab(ign, year) {
                 // display monthly leaderboard
-                $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(users) {
+                $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(result) {
 
-                    users = JSON.parse(users);
-                    $("#tbody-yearly").html(generateLeaderboard(users, lightmode, ign));
+                    result = JSON.parse(result);
+                    $("#tbody-yearly").html(generateLeaderboard(result.users, lightmode, ign));
 
                     var alert;
                     alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
 
-                    if (users[1] === 0) {
-                        alert += `   You are not placed because you completed <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
+                    if (result.position === 0) {
+                        alert += `   You are not placed because you completed <span class='badge badge-pill badge-dark'>${result.quests} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
                     } else {
-                        alert += `   You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
+                        alert += `   You are placed <span class='badge badge-pill badge-dark'>#${result.position}</span> with <span class='badge badge-pill badge-dark'>${result.quests} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
                     }
                     alert += "</div>";
                     $("#alert-yearly").append(alert);
@@ -1185,6 +1180,24 @@ $(function() {
         });
 
     });
+
+    // $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    //     switch (e.target.hash) {
+    //         case "#overall":
+    //             $.post("displayLeaderboard.php", JSON.stringify({"ign": ign, "game": "all", "num": 250}), function (users) {
+    //
+    //                 users = JSON.parse(users);
+    //                 $("#tbody").html(generateLeaderboard(users, lightmode, ign));
+    //
+    //                 $("#alert-overall").append(`<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>All games</span></div>`);
+    //
+    //             });
+    //             break;
+    //         case "#monthly":
+    //
+    //             break;
+    //     }
+    // });
 
     $("#search").on("keyup input", function() {
         var value = $(this).val().toUpperCase();
@@ -1214,13 +1227,13 @@ $(function() {
 
         $("#tableLoad").html("<div style='width: 100%; height: 100px;'><div style=''><i id='spinner' class='fa fa-angellist fa-spin fa-2x fa-fw'></i></div></div>");
 
-        $.post("displayLeaderboard.php", JSON.stringify(ignObj), function (users) {
-            users = JSON.parse(users);
-            $("#tbody").html(generateLeaderboard(users, lightmode, ign));
+        $.post("displayLeaderboard.php", JSON.stringify(ignObj), function (result) {
+            result = JSON.parse(result);
+            $("#tbody").html(generateLeaderboard(result.users, lightmode, ign));
 
             var alert;
-            if (users[1] != null) {
-                alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
+            if (result.position != null) {
+                alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#${result.position}</span> with <span class='badge badge-pill badge-dark'>${result.quests} quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
             } else {
                 alert = `<div style='text-align: center; border;' class='alert alert-dark' role='alert'>You are placed <span class='badge badge-pill badge-dark'>#∞</span> with <span class='badge badge-pill badge-dark'>0 quests</span> in <span class='badge badge-pill badge-dark'>${getEnGameNames(game)}</span></div>`;
             }
@@ -1234,15 +1247,15 @@ $(function() {
         var year = $(this).attr("id");
         $("#tbody-yearly").fadeOut(500);
         $("#yearly-loading").fadeIn(100);
-        $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(users) {
-            users = JSON.parse(users);
-            $("#tbody-yearly").html(generateLeaderboard(users, lightmode, ign));
+        $.post("displayYearlyLeaderboard.php", JSON.stringify({"ign": ign, "year": year}), function(result) {
+            result = JSON.parse(result);
+            $("#tbody-yearly").html(generateLeaderboard(result.users, lightmode, ign));
             var alert;
             alert = "<div style='text-align: center; border;' class='alert alert-dark' role='alert'>";
-            if (users[1] === 0) {
-                alert += `   You are not placed because you completed <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
+            if (result.position === 0) {
+                alert += `   You are not placed because you completed <span class='badge badge-pill badge-dark'>${result.quests} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
             } else {
-                alert += `   You are placed <span class='badge badge-pill badge-dark'>#${users[1]}</span> with <span class='badge badge-pill badge-dark'>${users[2]} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
+                alert += `   You are placed <span class='badge badge-pill badge-dark'>#${result.position}</span> with <span class='badge badge-pill badge-dark'>${result.quests} quests</span> in <span class='badge badge-pill badge-dark'>${year}</span>`;
             }
             alert += "</div>";
             $("#yearly-loading").hide();
@@ -2095,38 +2108,3 @@ function getXPToNextLevel(exp, newExp) {
     }
 }
 
-function convertDate(monthInput) {
-    var year = monthInput.substring(0,4);
-    var month = parseInt(monthInput.substring(5,7));
-    var output = "";
-
-    switch(month) {
-        case 1: output = "Jan";
-            break;
-        case 2: output = "Feb";
-            break;
-        case 3: output = "Mar";
-            break;
-        case 4: output = "Apr";
-            break;
-        case 5: output = "May";
-            break;
-        case 6: output = "Jun";
-            break;
-        case 7: output = "Jul";
-            break;
-        case 8: output = "Aug";
-            break;
-        case 9: output = "Sep";
-            break;
-        case 10: output = "Oct";
-            break;
-        case 11: output = "Nov";
-            break;
-        case 12: output = "Dec";
-            break;
-        }
-
-    return `${output} ${year}`;
-
-}

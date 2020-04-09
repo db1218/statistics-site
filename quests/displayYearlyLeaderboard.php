@@ -7,8 +7,7 @@
     $ign = urlencode($nameInput->ign);
     $year = urlencode($nameInput->year);
 
-    $url = file_get_contents("https://api.mojang.com/users/profiles/minecraft/$ign");
-    $JSONobj = json_decode($url);
+    $JSONobj = json_decode(file_get_contents("https://api.mojang.com/users/profiles/minecraft/$ign"));
     $uuid = $JSONobj->id;
 
     // Create connection
@@ -49,13 +48,11 @@
 
             }
 
-            $response = [];
+            $response = new \stdClass();
 
-            $short_users = array_slice($users, 0, 250);
-
-            array_push($response, $short_users);
-            array_push($response, $bestPos);
-            array_push($response, $bestQuests);
+            $response->users = array_slice($users, 0, 250);
+            $response->position = $bestPos;
+            $response->quests = $bestQuests;
 
             echo json_encode($response);
 

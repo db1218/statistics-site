@@ -46,14 +46,12 @@
 
             }
 
-            $response = [];
+            $response = new \stdClass();
 
-            $short_users = array_slice($users, 0, 250);
-
-            array_push($response, $short_users);
-            array_push($response, $bestPos);
-            array_push($response, $bestQuests);
-            array_push($response, $bestMonth);
+            $response->users = array_slice($users, 0, 250);
+            $response->position = $bestPos;
+            $response->quests = $bestQuests;
+            $response->month = $bestMonth;
 
             echo json_encode($response);
 

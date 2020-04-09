@@ -1,9 +1,9 @@
 export function generateLeaderboard(results, lightmode, ign) {
-    let tbody;
-    for (let index in results[0]) {
+    let tbody = "";
+    for (let index in results) {
         let record = "";
 
-        if (results[0][index].ign === ign) {
+        if (results[index].ign === ign) {
             record += `<tr class='table-active ${(lightmode === "dark") ? "dark" : ""}'>`;
         } else {
             record += "<tr>";
@@ -23,13 +23,14 @@ export function generateLeaderboard(results, lightmode, ign) {
                 record += `<th scope='row'>${parseInt(index) + 1}</th>`;
         }
 
-        if (results[0][index].ign === ign) {
-            record += `<td><a href='/quests/${results[0][index].uuid}'><b>${results[0][index].ign}</b></a></td>`;
+        if (results[index].ign === ign) {
+            record += `<td><a href='/quests/${results[index].uuid}'><b>${results[index].ign}</b></a></td>`;
         } else {
-            record += `<td><a href='/quests/${results[0][index].uuid}'>${results[0][index].ign}</a></td>`;
+            record += `<td><a href='/quests/${results[index].uuid}'>${results[index].ign}</a></td>`;
         }
 
-        record += `<td>${results[0][index].quests}</td>`;
+        record += `<td>${results[index].quests}</td>`;
+        if (results[index].month != null) record += `<td>${moment(results[index].month).format("MMM YYYY")}</td>`;
         tbody += record;
     }
     return tbody;
